@@ -1,0 +1,23 @@
+# Ignore toolchain
+arm-gnu-toolchain/
+
+# Ignore MSYS2 temp files
+msys2/
+
+# Ignore Eclipse workspace
+eclipse-workspace/
+
+# Ignore Eclipse installation (user local)
+eclipse-cpp/
+
+# Build artifacts (BUT keep library/lib!)
+*/build/
+library/build/
+
+# OS junk
+*.exe
+*.dll
+*.tmp
+*.log
+.DS_Store
+Thumbs.db

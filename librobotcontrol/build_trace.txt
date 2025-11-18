@@ -1,0 +1,318 @@
+>>> Cross-compiling librobotcontrol using /c/Users/pille/ECSW/ECSW_wise25/ECSW/arm-gnu-toolchain/bin/arm-none-linux-gnueabihf-gcc
+>>> Building in /c/Users/pille/git/librobotcontrol
+cd "/c/Users/pille/git/librobotcontrol" && mkdir -p lib && make -f Makefile --no-print-directory V=1 CC=/c/Users/pille/ECSW/ECSW_wise25/ECSW/arm-gnu-toolchain/bin/arm-none-linux-gnueabihf-gcc LINKER=
+made: build/bmp/bmp.o
+made: build/button.o
+made: build/cpu.o
+made: build/deprecated.o
+made: build/dsm.o
+made: build/encoder.o
+made: build/io/adc.o
+made: build/io/encoder_eqep.o
+made: build/io/gpio.o
+made: build/io/i2c.o
+src/io/pwm.c: In function 'rc_pwm_init':
+src/io/pwm.c:219:24: warning: implicit declaration of function 'rc_pwm_pru_init'; did you mean 'rc_pwm_init'? [-Wimplicit-function-declaration]
+  219 |                 return rc_pwm_pru_init(ss, frequency);
+      |                        ^~~~~~~~~~~~~~~
+      |                        rc_pwm_init
+made: build/io/pwm.o
+made: build/io/spi.o
+made: build/io/uart.o
+src/led.c:42:19: warning: 'gpios' defined but not used [-Wunused-variable]
+   42 | static const int* gpios[] = { NULL };
+      |                   ^~~~~
+made: build/led.o
+made: build/math/algebra.o
+made: build/math/algebra_common.o
+made: build/math/filter.o
+made: build/math/kalman.o
+made: build/math/matrix.o
+made: build/math/other.o
+made: build/math/polynomial.o
+made: build/math/quaternion.o
+made: build/math/ring_buffer.o
+made: build/math/vector.o
+In file included from include/rc/mavlink/common/../protocol.h:83,
+                 from include/rc/mavlink/common/common.h:30,
+                 from include/rc/mavlink/common/mavlink.h:32,
+                 from include/rc/mavlink_udp.h:31,
+                 from src/mavlink_udp.c:28:
+include/rc/mavlink/common/../mavlink_helpers.h: In function 'mavlink_finalize_message_buffer':
+include/rc/mavlink/common/../mavlink_helpers.h:248:31: warning: taking address of packed member of 'struct __mavlink_message' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  248 |         crc_accumulate_buffer(&msg->checksum, _MAV_PAYLOAD(msg), msg->len);
+      |                               ^~~~~~~~~~~~~~
+include/rc/mavlink/common/../mavlink_helpers.h:249:35: warning: taking address of packed member of 'struct __mavlink_message' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  249 |         crc_accumulate(crc_extra, &msg->checksum);
+      |                                   ^~~~~~~~~~~~~~
+include/rc/mavlink/common/../mavlink_helpers.h: In function 'mavlink_start_checksum':
+include/rc/mavlink/common/../mavlink_helpers.h:472:18: warning: taking address of packed member of 'struct __mavlink_message' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  472 |         crc_init(&msg->checksum);
+      |                  ^~~~~~~~~~~~~~
+include/rc/mavlink/common/../mavlink_helpers.h: In function 'mavlink_update_checksum':
+include/rc/mavlink/common/../mavlink_helpers.h:477:27: warning: taking address of packed member of 'struct __mavlink_message' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  477 |         crc_accumulate(c, &msg->checksum);
+      |                           ^~~~~~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1234:
+include/rc/mavlink/common/./mavlink_msg_attitude_quaternion_cov.h: In function 'mavlink_msg_attitude_quaternion_cov_encode':
+include/rc/mavlink/common/./mavlink_msg_attitude_quaternion_cov.h:147:142: warning: taking address of packed member of 'struct __mavlink_attitude_quaternion_cov_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  147 |     return mavlink_msg_attitude_quaternion_cov_pack(system_id, component_id, msg, attitude_quaternion_cov->time_usec, attitude_quaternion_cov->q, attitude_quaternion_cov->rollspeed, attitude_quaternion_cov->pitchspeed, attitude_quaternion_cov->yawspeed, attitude_quaternion_cov->covariance);
+      |                                                                                                                       ~~~~~~~~~~~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_attitude_quaternion_cov.h:147:278: warning: taking address of packed member of 'struct __mavlink_attitude_quaternion_cov_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  147 |     return mavlink_msg_attitude_quaternion_cov_pack(system_id, component_id, msg, attitude_quaternion_cov->time_usec, attitude_quaternion_cov->q, attitude_quaternion_cov->rollspeed, attitude_quaternion_cov->pitchspeed, attitude_quaternion_cov->yawspeed, attitude_quaternion_cov->covariance);
+      |                                                                                                                                                                                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_attitude_quaternion_cov.h: In function 'mavlink_msg_attitude_quaternion_cov_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_attitude_quaternion_cov.h:161:153: warning: taking address of packed member of 'struct __mavlink_attitude_quaternion_cov_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  161 |     return mavlink_msg_attitude_quaternion_cov_pack_chan(system_id, component_id, chan, msg, attitude_quaternion_cov->time_usec, attitude_quaternion_cov->q, attitude_quaternion_cov->rollspeed, attitude_quaternion_cov->pitchspeed, attitude_quaternion_cov->yawspeed, attitude_quaternion_cov->covariance);
+      |                                                                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_attitude_quaternion_cov.h:161:289: warning: taking address of packed member of 'struct __mavlink_attitude_quaternion_cov_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  161 |     return mavlink_msg_attitude_quaternion_cov_pack_chan(system_id, component_id, chan, msg, attitude_quaternion_cov->time_usec, attitude_quaternion_cov->q, attitude_quaternion_cov->rollspeed, attitude_quaternion_cov->pitchspeed, attitude_quaternion_cov->yawspeed, attitude_quaternion_cov->covariance);
+      |                                                                                                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1236:
+include/rc/mavlink/common/./mavlink_msg_global_position_int_cov.h: In function 'mavlink_msg_global_position_int_cov_encode':
+include/rc/mavlink/common/./mavlink_msg_global_position_int_cov.h:182:399: warning: taking address of packed member of 'struct __mavlink_global_position_int_cov_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  182 |     return mavlink_msg_global_position_int_cov_pack(system_id, component_id, msg, global_position_int_cov->time_usec, global_position_int_cov->estimator_type, global_position_int_cov->lat, global_position_int_cov->lon, global_position_int_cov->alt, global_position_int_cov->relative_alt, global_position_int_cov->vx, global_position_int_cov->vy, global_position_int_cov->vz, global_position_int_cov->covariance);
+      |                                                                                                                                                                                                                                                                                                                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_global_position_int_cov.h: In function 'mavlink_msg_global_position_int_cov_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_global_position_int_cov.h:196:410: warning: taking address of packed member of 'struct __mavlink_global_position_int_cov_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  196 |     return mavlink_msg_global_position_int_cov_pack_chan(system_id, component_id, chan, msg, global_position_int_cov->time_usec, global_position_int_cov->estimator_type, global_position_int_cov->lat, global_position_int_cov->lon, global_position_int_cov->alt, global_position_int_cov->relative_alt, global_position_int_cov->vx, global_position_int_cov->vy, global_position_int_cov->vz, global_position_int_cov->covariance);
+      |                                                                                                                                                                                                                                                                                                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1237:
+include/rc/mavlink/common/./mavlink_msg_local_position_ned_cov.h: In function 'mavlink_msg_local_position_ned_cov_encode':
+include/rc/mavlink/common/./mavlink_msg_local_position_ned_cov.h:200:428: warning: taking address of packed member of 'struct __mavlink_local_position_ned_cov_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  200 |     return mavlink_msg_local_position_ned_cov_pack(system_id, component_id, msg, local_position_ned_cov->time_usec, local_position_ned_cov->estimator_type, local_position_ned_cov->x, local_position_ned_cov->y, local_position_ned_cov->z, local_position_ned_cov->vx, local_position_ned_cov->vy, local_position_ned_cov->vz, local_position_ned_cov->ax, local_position_ned_cov->ay, local_position_ned_cov->az, local_position_ned_cov->covariance);
+      |                                                                                                                                                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_local_position_ned_cov.h: In function 'mavlink_msg_local_position_ned_cov_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_local_position_ned_cov.h:214:439: warning: taking address of packed member of 'struct __mavlink_local_position_ned_cov_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  214 |     return mavlink_msg_local_position_ned_cov_pack_chan(system_id, component_id, chan, msg, local_position_ned_cov->time_usec, local_position_ned_cov->estimator_type, local_position_ned_cov->x, local_position_ned_cov->y, local_position_ned_cov->z, local_position_ned_cov->vx, local_position_ned_cov->vy, local_position_ned_cov->vz, local_position_ned_cov->ax, local_position_ned_cov->ay, local_position_ned_cov->az, local_position_ned_cov->covariance);
+      |                                                                                                                                                                                                                                                                                                                                                                                                                                 ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1249:
+include/rc/mavlink/common/./mavlink_msg_set_attitude_target.h: In function 'mavlink_msg_set_attitude_target_encode':
+include/rc/mavlink/common/./mavlink_msg_set_attitude_target.h:173:240: warning: taking address of packed member of 'struct __mavlink_set_attitude_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  173 |     return mavlink_msg_set_attitude_target_pack(system_id, component_id, msg, set_attitude_target->time_boot_ms, set_attitude_target->target_system, set_attitude_target->target_component, set_attitude_target->type_mask, set_attitude_target->q, set_attitude_target->body_roll_rate, set_attitude_target->body_pitch_rate, set_attitude_target->body_yaw_rate, set_attitude_target->thrust);
+      |                                                                                                                                                                                                                             ~~~~~~~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_set_attitude_target.h: In function 'mavlink_msg_set_attitude_target_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_set_attitude_target.h:187:251: warning: taking address of packed member of 'struct __mavlink_set_attitude_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  187 |     return mavlink_msg_set_attitude_target_pack_chan(system_id, component_id, chan, msg, set_attitude_target->time_boot_ms, set_attitude_target->target_system, set_attitude_target->target_component, set_attitude_target->type_mask, set_attitude_target->q, set_attitude_target->body_roll_rate, set_attitude_target->body_pitch_rate, set_attitude_target->body_yaw_rate, set_attitude_target->thrust);
+      |                                                                                                                                                                                                                                        ~~~~~~~~~~~~~~~~~~~^~~
+In file included from include/rc/mavlink/common/common.h:1250:
+include/rc/mavlink/common/./mavlink_msg_attitude_target.h: In function 'mavlink_msg_attitude_target_encode':
+include/rc/mavlink/common/./mavlink_msg_attitude_target.h:155:149: warning: taking address of packed member of 'struct __mavlink_attitude_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  155 |     return mavlink_msg_attitude_target_pack(system_id, component_id, msg, attitude_target->time_boot_ms, attitude_target->type_mask, attitude_target->q, attitude_target->body_roll_rate, attitude_target->body_pitch_rate, attitude_target->body_yaw_rate, attitude_target->thrust);
+      |                                                                                                                                      ~~~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_attitude_target.h: In function 'mavlink_msg_attitude_target_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_attitude_target.h:169:160: warning: taking address of packed member of 'struct __mavlink_attitude_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  169 |     return mavlink_msg_attitude_target_pack_chan(system_id, component_id, chan, msg, attitude_target->time_boot_ms, attitude_target->type_mask, attitude_target->q, attitude_target->body_roll_rate, attitude_target->body_pitch_rate, attitude_target->body_yaw_rate, attitude_target->thrust);
+      |                                                                                                                                                 ~~~~~~~~~~~~~~~^~~
+In file included from include/rc/mavlink/common/common.h:1259:
+include/rc/mavlink/common/./mavlink_msg_hil_actuator_controls.h: In function 'mavlink_msg_hil_actuator_controls_encode':
+include/rc/mavlink/common/./mavlink_msg_hil_actuator_controls.h:128:136: warning: taking address of packed member of 'struct __mavlink_hil_actuator_controls_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  128 |     return mavlink_msg_hil_actuator_controls_pack(system_id, component_id, msg, hil_actuator_controls->time_usec, hil_actuator_controls->controls, hil_actuator_controls->mode, hil_actuator_controls->flags);
+      |                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_hil_actuator_controls.h: In function 'mavlink_msg_hil_actuator_controls_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_hil_actuator_controls.h:142:147: warning: taking address of packed member of 'struct __mavlink_hil_actuator_controls_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  142 |     return mavlink_msg_hil_actuator_controls_pack_chan(system_id, component_id, chan, msg, hil_actuator_controls->time_usec, hil_actuator_controls->controls, hil_actuator_controls->mode, hil_actuator_controls->flags);
+      |                                                                                                                              ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1275:
+include/rc/mavlink/common/./mavlink_msg_hil_state_quaternion.h: In function 'mavlink_msg_hil_state_quaternion_encode':
+include/rc/mavlink/common/./mavlink_msg_hil_state_quaternion.h:236:133: warning: taking address of packed member of 'struct __mavlink_hil_state_quaternion_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  236 |     return mavlink_msg_hil_state_quaternion_pack(system_id, component_id, msg, hil_state_quaternion->time_usec, hil_state_quaternion->attitude_quaternion, hil_state_quaternion->rollspeed, hil_state_quaternion->pitchspeed, hil_state_quaternion->yawspeed, hil_state_quaternion->lat, hil_state_quaternion->lon, hil_state_quaternion->alt, hil_state_quaternion->vx, hil_state_quaternion->vy, hil_state_quaternion->vz, hil_state_quaternion->ind_airspeed, hil_state_quaternion->true_airspeed, hil_state_quaternion->xacc, hil_state_quaternion->yacc, hil_state_quaternion->zacc);
+      |                                                                                                                 ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_hil_state_quaternion.h: In function 'mavlink_msg_hil_state_quaternion_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_hil_state_quaternion.h:250:144: warning: taking address of packed member of 'struct __mavlink_hil_state_quaternion_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  250 |     return mavlink_msg_hil_state_quaternion_pack_chan(system_id, component_id, chan, msg, hil_state_quaternion->time_usec, hil_state_quaternion->attitude_quaternion, hil_state_quaternion->rollspeed, hil_state_quaternion->pitchspeed, hil_state_quaternion->yawspeed, hil_state_quaternion->lat, hil_state_quaternion->lon, hil_state_quaternion->alt, hil_state_quaternion->vx, hil_state_quaternion->vy, hil_state_quaternion->vz, hil_state_quaternion->ind_airspeed, hil_state_quaternion->true_airspeed, hil_state_quaternion->xacc, hil_state_quaternion->yacc, hil_state_quaternion->zacc);
+      |                                                                                                                            ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1294:
+include/rc/mavlink/common/./mavlink_msg_terrain_data.h: In function 'mavlink_msg_terrain_data_encode':
+include/rc/mavlink/common/./mavlink_msg_terrain_data.h:137:173: warning: taking address of packed member of 'struct __mavlink_terrain_data_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  137 |     return mavlink_msg_terrain_data_pack(system_id, component_id, msg, terrain_data->lat, terrain_data->lon, terrain_data->grid_spacing, terrain_data->gridbit, terrain_data->data);
+      |                                                                                                                                                                 ~~~~~~~~~~~~^~~~~~
+include/rc/mavlink/common/./mavlink_msg_terrain_data.h: In function 'mavlink_msg_terrain_data_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_terrain_data.h:151:184: warning: taking address of packed member of 'struct __mavlink_terrain_data_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  151 |     return mavlink_msg_terrain_data_pack_chan(system_id, component_id, chan, msg, terrain_data->lat, terrain_data->lon, terrain_data->grid_spacing, terrain_data->gridbit, terrain_data->data);
+      |                                                                                                                                                                            ~~~~~~~~~~~~^~~~~~
+In file included from include/rc/mavlink/common/common.h:1298:
+include/rc/mavlink/common/./mavlink_msg_att_pos_mocap.h: In function 'mavlink_msg_att_pos_mocap_encode':
+include/rc/mavlink/common/./mavlink_msg_att_pos_mocap.h:137:112: warning: taking address of packed member of 'struct __mavlink_att_pos_mocap_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  137 |     return mavlink_msg_att_pos_mocap_pack(system_id, component_id, msg, att_pos_mocap->time_usec, att_pos_mocap->q, att_pos_mocap->x, att_pos_mocap->y, att_pos_mocap->z);
+      |                                                                                                   ~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_att_pos_mocap.h: In function 'mavlink_msg_att_pos_mocap_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_att_pos_mocap.h:151:123: warning: taking address of packed member of 'struct __mavlink_att_pos_mocap_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  151 |     return mavlink_msg_att_pos_mocap_pack_chan(system_id, component_id, chan, msg, att_pos_mocap->time_usec, att_pos_mocap->q, att_pos_mocap->x, att_pos_mocap->y, att_pos_mocap->z);
+      |                                                                                                              ~~~~~~~~~~~~~^~~
+In file included from include/rc/mavlink/common/common.h:1299:
+include/rc/mavlink/common/./mavlink_msg_set_actuator_control_target.h: In function 'mavlink_msg_set_actuator_control_target_encode':
+include/rc/mavlink/common/./mavlink_msg_set_actuator_control_target.h:137:285: warning: taking address of packed member of 'struct __mavlink_set_actuator_control_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  137 |     return mavlink_msg_set_actuator_control_target_pack(system_id, component_id, msg, set_actuator_control_target->time_usec, set_actuator_control_target->group_mlx, set_actuator_control_target->target_system, set_actuator_control_target->target_component, set_actuator_control_target->controls);
+      |                                                                                                                                                                                                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_set_actuator_control_target.h: In function 'mavlink_msg_set_actuator_control_target_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_set_actuator_control_target.h:151:296: warning: taking address of packed member of 'struct __mavlink_set_actuator_control_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  151 |     return mavlink_msg_set_actuator_control_target_pack_chan(system_id, component_id, chan, msg, set_actuator_control_target->time_usec, set_actuator_control_target->group_mlx, set_actuator_control_target->target_system, set_actuator_control_target->target_component, set_actuator_control_target->controls);
+      |                                                                                                                                                                                                                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1300:
+include/rc/mavlink/common/./mavlink_msg_actuator_control_target.h: In function 'mavlink_msg_actuator_control_target_encode':
+include/rc/mavlink/common/./mavlink_msg_actuator_control_target.h:119:178: warning: taking address of packed member of 'struct __mavlink_actuator_control_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  119 |     return mavlink_msg_actuator_control_target_pack(system_id, component_id, msg, actuator_control_target->time_usec, actuator_control_target->group_mlx, actuator_control_target->controls);
+      |                                                                                                                                                           ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_actuator_control_target.h: In function 'mavlink_msg_actuator_control_target_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_actuator_control_target.h:133:189: warning: taking address of packed member of 'struct __mavlink_actuator_control_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  133 |     return mavlink_msg_actuator_control_target_pack_chan(system_id, component_id, chan, msg, actuator_control_target->time_usec, actuator_control_target->group_mlx, actuator_control_target->controls);
+      |                                                                                                                                                                      ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1304:
+include/rc/mavlink/common/./mavlink_msg_follow_target.h: In function 'mavlink_msg_follow_target_encode':
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:195:205: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  195 |     return mavlink_msg_follow_target_pack(system_id, component_id, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                ~~~~~~~~~~~~~^~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:195:225: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  195 |     return mavlink_msg_follow_target_pack(system_id, component_id, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                                    ~~~~~~~~~~~~~^~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:195:245: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  195 |     return mavlink_msg_follow_target_pack(system_id, component_id, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                                                        ~~~~~~~~~~~~~^~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:195:272: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  195 |     return mavlink_msg_follow_target_pack(system_id, component_id, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                                                                                   ~~~~~~~~~~~~~^~~~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:195:294: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  195 |     return mavlink_msg_follow_target_pack(system_id, component_id, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                                                                                                         ~~~~~~~~~~~~~^~~~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h: In function 'mavlink_msg_follow_target_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:209:216: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  209 |     return mavlink_msg_follow_target_pack_chan(system_id, component_id, chan, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                           ~~~~~~~~~~~~~^~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:209:236: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  209 |     return mavlink_msg_follow_target_pack_chan(system_id, component_id, chan, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                                               ~~~~~~~~~~~~~^~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:209:256: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  209 |     return mavlink_msg_follow_target_pack_chan(system_id, component_id, chan, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                                                                   ~~~~~~~~~~~~~^~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:209:283: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  209 |     return mavlink_msg_follow_target_pack_chan(system_id, component_id, chan, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                                                                                              ~~~~~~~~~~~~~^~~~~~~
+include/rc/mavlink/common/./mavlink_msg_follow_target.h:209:305: warning: taking address of packed member of 'struct __mavlink_follow_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  209 |     return mavlink_msg_follow_target_pack_chan(system_id, component_id, chan, msg, follow_target->timestamp, follow_target->est_capabilities, follow_target->lat, follow_target->lon, follow_target->alt, follow_target->vel, follow_target->acc, follow_target->attitude_q, follow_target->rates, follow_target->position_cov, follow_target->custom_state);
+      |                                                                                                                                                                                                                                                                                                    ~~~~~~~~~~~~~^~~~~~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1305:
+include/rc/mavlink/common/./mavlink_msg_control_system_state.h: In function 'mavlink_msg_control_system_state_encode':
+include/rc/mavlink/common/./mavlink_msg_control_system_state.h:247:426: warning: taking address of packed member of 'struct __mavlink_control_system_state_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  247 |     return mavlink_msg_control_system_state_pack(system_id, component_id, msg, control_system_state->time_usec, control_system_state->x_acc, control_system_state->y_acc, control_system_state->z_acc, control_system_state->x_vel, control_system_state->y_vel, control_system_state->z_vel, control_system_state->x_pos, control_system_state->y_pos, control_system_state->z_pos, control_system_state->airspeed, control_system_state->vel_variance, control_system_state->pos_variance, control_system_state->q, control_system_state->roll_rate, control_system_state->pitch_rate, control_system_state->yaw_rate);
+      |                                                                                                                                                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_control_system_state.h:247:462: warning: taking address of packed member of 'struct __mavlink_control_system_state_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  247 |     return mavlink_msg_control_system_state_pack(system_id, component_id, msg, control_system_state->time_usec, control_system_state->x_acc, control_system_state->y_acc, control_system_state->z_acc, control_system_state->x_vel, control_system_state->y_vel, control_system_state->z_vel, control_system_state->x_pos, control_system_state->y_pos, control_system_state->z_pos, control_system_state->airspeed, control_system_state->vel_variance, control_system_state->pos_variance, control_system_state->q, control_system_state->roll_rate, control_system_state->pitch_rate, control_system_state->yaw_rate);
+      |                                                                                                                                                                                                                                                                                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_control_system_state.h:247:498: warning: taking address of packed member of 'struct __mavlink_control_system_state_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  247 |     return mavlink_msg_control_system_state_pack(system_id, component_id, msg, control_system_state->time_usec, control_system_state->x_acc, control_system_state->y_acc, control_system_state->z_acc, control_system_state->x_vel, control_system_state->y_vel, control_system_state->z_vel, control_system_state->x_pos, control_system_state->y_pos, control_system_state->z_pos, control_system_state->airspeed, control_system_state->vel_variance, control_system_state->pos_variance, control_system_state->q, control_system_state->roll_rate, control_system_state->pitch_rate, control_system_state->yaw_rate);
+      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ~~~~~~~~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_control_system_state.h: In function 'mavlink_msg_control_system_state_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_control_system_state.h:261:437: warning: taking address of packed member of 'struct __mavlink_control_system_state_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  261 |     return mavlink_msg_control_system_state_pack_chan(system_id, component_id, chan, msg, control_system_state->time_usec, control_system_state->x_acc, control_system_state->y_acc, control_system_state->z_acc, control_system_state->x_vel, control_system_state->y_vel, control_system_state->z_vel, control_system_state->x_pos, control_system_state->y_pos, control_system_state->z_pos, control_system_state->airspeed, control_system_state->vel_variance, control_system_state->pos_variance, control_system_state->q, control_system_state->roll_rate, control_system_state->pitch_rate, control_system_state->yaw_rate);
+      |                                                                                                                                                                                                                                                                                                                                                                                                                                 ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_control_system_state.h:261:473: warning: taking address of packed member of 'struct __mavlink_control_system_state_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  261 |     return mavlink_msg_control_system_state_pack_chan(system_id, component_id, chan, msg, control_system_state->time_usec, control_system_state->x_acc, control_system_state->y_acc, control_system_state->z_acc, control_system_state->x_vel, control_system_state->y_vel, control_system_state->z_vel, control_system_state->x_pos, control_system_state->y_pos, control_system_state->z_pos, control_system_state->airspeed, control_system_state->vel_variance, control_system_state->pos_variance, control_system_state->q, control_system_state->roll_rate, control_system_state->pitch_rate, control_system_state->yaw_rate);
+      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_control_system_state.h:261:509: warning: taking address of packed member of 'struct __mavlink_control_system_state_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  261 |     return mavlink_msg_control_system_state_pack_chan(system_id, component_id, chan, msg, control_system_state->time_usec, control_system_state->x_acc, control_system_state->y_acc, control_system_state->z_acc, control_system_state->x_vel, control_system_state->y_vel, control_system_state->z_vel, control_system_state->x_pos, control_system_state->y_pos, control_system_state->z_pos, control_system_state->airspeed, control_system_state->vel_variance, control_system_state->pos_variance, control_system_state->q, control_system_state->roll_rate, control_system_state->pitch_rate, control_system_state->yaw_rate);
+      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~^~~
+In file included from include/rc/mavlink/common/common.h:1306:
+include/rc/mavlink/common/./mavlink_msg_battery_status.h: In function 'mavlink_msg_battery_status_encode':
+include/rc/mavlink/common/./mavlink_msg_battery_status.h:173:193: warning: taking address of packed member of 'struct __mavlink_battery_status_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  173 |     return mavlink_msg_battery_status_pack(system_id, component_id, msg, battery_status->id, battery_status->battery_function, battery_status->type, battery_status->temperature, battery_status->voltages, battery_status->current_battery, battery_status->current_consumed, battery_status->energy_consumed, battery_status->battery_remaining);
+      |                                                                                                                                                                                   ~~~~~~~~~~~~~~^~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_battery_status.h: In function 'mavlink_msg_battery_status_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_battery_status.h:187:204: warning: taking address of packed member of 'struct __mavlink_battery_status_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  187 |     return mavlink_msg_battery_status_pack_chan(system_id, component_id, chan, msg, battery_status->id, battery_status->battery_function, battery_status->type, battery_status->temperature, battery_status->voltages, battery_status->current_battery, battery_status->current_consumed, battery_status->energy_consumed, battery_status->battery_remaining);
+      |                                                                                                                                                                                              ~~~~~~~~~~~~~~^~~~~~~~~~
+In file included from include/rc/mavlink/common/common.h:1308:
+include/rc/mavlink/common/./mavlink_msg_landing_target.h: In function 'mavlink_msg_landing_target_encode':
+include/rc/mavlink/common/./mavlink_msg_landing_target.h:218:347: warning: taking address of packed member of 'struct __mavlink_landing_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  218 |     return mavlink_msg_landing_target_pack(system_id, component_id, msg, landing_target->time_usec, landing_target->target_num, landing_target->frame, landing_target->angle_x, landing_target->angle_y, landing_target->distance, landing_target->size_x, landing_target->size_y, landing_target->x, landing_target->y, landing_target->z, landing_target->q, landing_target->type, landing_target->position_valid);
+      |                                                                                                                                                                                                                                                                                                                                             ~~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_landing_target.h: In function 'mavlink_msg_landing_target_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_landing_target.h:232:358: warning: taking address of packed member of 'struct __mavlink_landing_target_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  232 |     return mavlink_msg_landing_target_pack_chan(system_id, component_id, chan, msg, landing_target->time_usec, landing_target->target_num, landing_target->frame, landing_target->angle_x, landing_target->angle_y, landing_target->distance, landing_target->size_x, landing_target->size_y, landing_target->x, landing_target->y, landing_target->z, landing_target->q, landing_target->type, landing_target->position_valid);
+      |                                                                                                                                                                                                                                                                                                                                                        ~~~~~~~~~~~~~~^~~
+In file included from include/rc/mavlink/common/common.h:1315:
+include/rc/mavlink/common/./mavlink_msg_home_position.h: In function 'mavlink_msg_home_position_encode':
+include/rc/mavlink/common/./mavlink_msg_home_position.h:191:216: warning: taking address of packed member of 'struct __mavlink_home_position_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  191 |     return mavlink_msg_home_position_pack(system_id, component_id, msg, home_position->latitude, home_position->longitude, home_position->altitude, home_position->x, home_position->y, home_position->z, home_position->q, home_position->approach_x, home_position->approach_y, home_position->approach_z, home_position->time_usec);
+      |                                                                                                                                                                                                           ~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_home_position.h: In function 'mavlink_msg_home_position_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_home_position.h:205:227: warning: taking address of packed member of 'struct __mavlink_home_position_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  205 |     return mavlink_msg_home_position_pack_chan(system_id, component_id, chan, msg, home_position->latitude, home_position->longitude, home_position->altitude, home_position->x, home_position->y, home_position->z, home_position->q, home_position->approach_x, home_position->approach_y, home_position->approach_z, home_position->time_usec);
+      |                                                                                                                                                                                                                      ~~~~~~~~~~~~~^~~
+In file included from include/rc/mavlink/common/common.h:1316:
+include/rc/mavlink/common/./mavlink_msg_set_home_position.h: In function 'mavlink_msg_set_home_position_encode':
+include/rc/mavlink/common/./mavlink_msg_set_home_position.h:200:282: warning: taking address of packed member of 'struct __mavlink_set_home_position_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  200 |     return mavlink_msg_set_home_position_pack(system_id, component_id, msg, set_home_position->target_system, set_home_position->latitude, set_home_position->longitude, set_home_position->altitude, set_home_position->x, set_home_position->y, set_home_position->z, set_home_position->q, set_home_position->approach_x, set_home_position->approach_y, set_home_position->approach_z, set_home_position->time_usec);
+      |                                                                                                                                                                                                                                                                         ~~~~~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_set_home_position.h: In function 'mavlink_msg_set_home_position_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_set_home_position.h:214:293: warning: taking address of packed member of 'struct __mavlink_set_home_position_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  214 |     return mavlink_msg_set_home_position_pack_chan(system_id, component_id, chan, msg, set_home_position->target_system, set_home_position->latitude, set_home_position->longitude, set_home_position->altitude, set_home_position->x, set_home_position->y, set_home_position->z, set_home_position->q, set_home_position->approach_x, set_home_position->approach_y, set_home_position->approach_z, set_home_position->time_usec);
+      |                                                                                                                                                                                                                                                                                    ~~~~~~~~~~~~~~~~~^~~
+In file included from include/rc/mavlink/common/common.h:1335:
+include/rc/mavlink/common/./mavlink_msg_camera_image_captured.h: In function 'mavlink_msg_camera_image_captured_encode':
+include/rc/mavlink/common/./mavlink_msg_camera_image_captured.h:192:327: warning: taking address of packed member of 'struct __mavlink_camera_image_captured_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  192 |     return mavlink_msg_camera_image_captured_pack(system_id, component_id, msg, camera_image_captured->time_boot_ms, camera_image_captured->time_utc, camera_image_captured->camera_id, camera_image_captured->lat, camera_image_captured->lon, camera_image_captured->alt, camera_image_captured->relative_alt, camera_image_captured->q, camera_image_captured->image_index, camera_image_captured->capture_result, camera_image_captured->file_url);
+      |                                                                                                                                                                                                                                                                                                                  ~~~~~~~~~~~~~~~~~~~~~^~~
+include/rc/mavlink/common/./mavlink_msg_camera_image_captured.h: In function 'mavlink_msg_camera_image_captured_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_camera_image_captured.h:206:338: warning: taking address of packed member of 'struct __mavlink_camera_image_captured_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  206 |     return mavlink_msg_camera_image_captured_pack_chan(system_id, component_id, chan, msg, camera_image_captured->time_boot_ms, camera_image_captured->time_utc, camera_image_captured->camera_id, camera_image_captured->lat, camera_image_captured->lon, camera_image_captured->alt, camera_image_captured->relative_alt, camera_image_captured->q, camera_image_captured->image_index, camera_image_captured->capture_result, camera_image_captured->file_url);
+      |                                                                                                                                                                                                                                                                                                                             ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from include/rc/mavlink/common/common.h:1352:
+include/rc/mavlink/common/./mavlink_msg_obstacle_distance.h: In function 'mavlink_msg_obstacle_distance_encode':
+include/rc/mavlink/common/./mavlink_msg_obstacle_distance.h:146:156: warning: taking address of packed member of 'struct __mavlink_obstacle_distance_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  146 |     return mavlink_msg_obstacle_distance_pack(system_id, component_id, msg, obstacle_distance->time_usec, obstacle_distance->sensor_type, obstacle_distance->distances, obstacle_distance->increment, obstacle_distance->min_distance, obstacle_distance->max_distance);
+      |                                                                                                                                           ~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+include/rc/mavlink/common/./mavlink_msg_obstacle_distance.h: In function 'mavlink_msg_obstacle_distance_encode_chan':
+include/rc/mavlink/common/./mavlink_msg_obstacle_distance.h:160:167: warning: taking address of packed member of 'struct __mavlink_obstacle_distance_t' may result in an unaligned pointer value [-Waddress-of-packed-member]
+  160 |     return mavlink_msg_obstacle_distance_pack_chan(system_id, component_id, chan, msg, obstacle_distance->time_usec, obstacle_distance->sensor_type, obstacle_distance->distances, obstacle_distance->increment, obstacle_distance->min_distance, obstacle_distance->max_distance);
+      |                                                                                                                                                      ~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+made: build/mavlink_udp.o
+src/model.c: In function 'rc_model_category':
+src/model.c:192:16: warning: implicit conversion from 'rc_model_t' to 'rc_model_category_t' [-Wenum-conversion]
+  192 |         return current_model;
+      |                ^~~~~~~~~~~~~
+made: build/model.o
+made: build/motor.o
+made: build/mpu/mpu.o
+made: build/pinmux.o
+made: build/pru/encoder_pru.o
+src/pru/pru.c: In function 'rc_pru_stop':
+src/pru/pru.c:184:24: warning: returning 'void *' from a function with return type 'int' makes integer from pointer without a cast [-Wint-conversion]
+  184 |                 return NULL;
+      |                        ^~~~
+made: build/pru/pru.o
+src/pru/pwm_pru.c: In function 'rc_pwm_pru_init':
+src/pru/pwm_pru.c:40:25: warning: unused parameter 'frequency' [-Wunused-parameter]
+   40 | int rc_pwm_pru_init(int frequency)
+      |                     ~~~~^~~~~~~~~
+src/pru/pwm_pru.c: At top level:
+src/pru/pwm_pru.c:93:6: warning: no previous prototype for 'rc_servo_cleanup' [-Wmissing-prototypes]
+   93 | void rc_servo_cleanup()
+      |      ^~~~~~~~~~~~~~~~
+src/pru/pwm_pru.c:111:5: warning: no previous prototype for 'rc_servo_set_esc_range' [-Wmissing-prototypes]
+  111 | int rc_servo_set_esc_range(int min, int max)
+      |     ^~~~~~~~~~~~~~~~~~~~~~
+src/pru/pwm_pru.c:127:5: warning: no previous prototype for 'rc_servo_send_pulse_us' [-Wmissing-prototypes]
+  127 | int rc_servo_send_pulse_us(int ch, int us)
+      |     ^~~~~~~~~~~~~~~~~~~~~~
+src/pru/pwm_pru.c:175:5: warning: no previous prototype for 'rc_servo_send_pulse_normalized' [-Wmissing-prototypes]
+  175 | int rc_servo_send_pulse_normalized(int ch, double input)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/pru/pwm_pru.c:189:5: warning: no previous prototype for 'rc_servo_send_esc_pulse_normalized' [-Wmissing-prototypes]
+  189 | int rc_servo_send_esc_pulse_normalized(int ch, double input)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/pru/pwm_pru.c:202:5: warning: no previous prototype for 'rc_servo_send_oneshot_pulse_normalized' [-Wmissing-prototypes]
+  202 | int rc_servo_send_oneshot_pulse_normalized(int ch, double input)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+made: build/pru/pwm_pru.o
+made: build/pru/servo.o
+made: build/pthread.o
+made: build/start_stop.o
+made: build/time.o
+made: build/version.o
+make[2]: o: No such file or directory
+make[2]: [Makefile:47: lib/librobotcontrol.so.1.1.0] Error 127 (ignored)
+ln: failed to create symbolic link 'lib/librobotcontrol.so.1': No such file or directory
+make[2]: *** [Makefile:48: lib/librobotcontrol.so.1.1.0] Error 1
+make[1]: *** [Makefile:9: all] Error 2
+make: *** [Makefile.cross:38: all] Error 2

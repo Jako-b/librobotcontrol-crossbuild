@@ -1,0 +1,72 @@
+# =====================================================
+# librobotcontrol cross build wrapper (portable + MSYS2)
+# =====================================================
+
+SHELL := /usr/bin/bash
+.EXPORT_ALL_VARIABLES:
+
+# Root directory of this Makefile (absolute path)
+ROOT_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+
+# librobotcontrol static library (convert to Windows path for gcc.exe)
+LIBROBOTCONTROL_STATIC := $(shell cygpath -w "$(ROOT_DIR)/library/lib/librobotcontrol.a")
+export LIBROBOTCONTROL_STATIC
+
+# =====================================================
+# Toolchain configuration
+# =====================================================
+
+# expect TOOLCHAIN_DIR to be provided by startEclipse.cmd
+
+PREFIX := arm-none-linux-gnueabihf-
+
+# Convert Windows paths → MSYS paths automatically
+TC_BIN := $(shell cygpath -u "$(TOOLCHAIN_DIR)/bin")
+
+# Toolchain binaries (force override!)
+CC     = $(TC_BIN)/$(PREFIX)gcc
+CXX    = $(TC_BIN)/$(PREFIX)g++
+AR     = $(TC_BIN)/$(PREFIX)ar
+LD     = $(TC_BIN)/$(PREFIX)ld
+STRIP  = $(TC_BIN)/$(PREFIX)strip
+LINKER = $(CC)
+
+# Ensure toolchain is first in PATH
+export PATH := /usr/bin:$(TC_BIN):$(PATH)
+export MSYS2_ARG_CONV_EXCL := *
+
+# =====================================================
+# Default target: use librobotcontrol's own Makefile
+# =====================================================
+
+all:
+	@echo ">>> ROOT_DIR=$(ROOT_DIR)"
+	@echo ">>> TOOLCHAIN_DIR=$(TOOLCHAIN_DIR)"
+	@echo ">>> Using CC=$(CC)"
+	cd "$(ROOT_DIR)" && mkdir -p lib && \
+	$(MAKE) -f Makefile --no-print-directory V=1 \
+    TOOLCHAIN_DIR="$(TOOLCHAIN_DIR)" \
+    CC="$(CC)" CXX="$(CXX)" AR="$(AR)" LD="$(LD)" LINKER="$(LINKER)" \
+    LIBROBOTCONTROL_STATIC="$(LIBROBOTCONTROL_STATIC)"
+
+clean:
+	cd "$(ROOT_DIR)" && $(MAKE) -f Makefile --no-print-directory clean
+
+install uninstall:
+	cd "$(ROOT_DIR)" && $(MAKE) -f Makefile --no-print-directory $@
+
+# =====================================================
+# Optional: deploy build result to BeagleBone via rsync
+# =====================================================
+
+TARGET_USER := debian
+TARGET_IP   := 192.168.7.2
+TARGET_PATH := /home/$(TARGET_USER)/rc-build
+
+deploy:
+	@echo ">>> Deploying librobotcontrol build to $(TARGET_IP)"
+	rsync -avz --delete "$(ROOT_DIR)/library/lib/" $(TARGET_USER)@$(TARGET_IP):$(TARGET_PATH)/lib/
+	rsync -avz --delete "$(ROOT_DIR)/examples/"     $(TARGET_USER)@$(TARGET_IP):$(TARGET_PATH)/examples/
+
+run:
+	ssh $(TARGET_USER)@$(TARGET_IP) 'cd $(TARGET_PATH)/examples/bin && ./rc_test_drivers'
