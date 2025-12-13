@@ -34,59 +34,6 @@ static int init_flag[3] = {0,0,0};
 static int mode;
 static int ssindex[3];
 
-static int __export_channels(int ss)
-{
-    char buf[MAXBUF];
-    int fd;
-
-    // export channel A
-    snprintf(buf, sizeof(buf), "/dev/bone/pwm/%d/export", ss);
-    fd = open(buf, O_WRONLY);
-    if(fd < 0){
-        perror("ERROR: cannot open PWM export A");
-        return -1;
-    }
-    write(fd, "0", 2);
-    close(fd);
-
-    // export channel B
-    snprintf(buf, sizeof(buf), "/dev/bone/pwm/%d/export", ss);
-    fd = open(buf, O_WRONLY);
-    if(fd < 0){
-        perror("ERROR: cannot open PWM export B");
-        return -1;
-    }
-    write(fd, "1", 2);
-    close(fd);
-
-    return 0;
-}
-
-static int __unexport_channels(int ss)
-{
-    char buf[MAXBUF];
-    int fd;
-
-    // unexport A
-    snprintf(buf, sizeof(buf), "/dev/bone/pwm/%d/unexport", ss);
-    fd = open(buf, O_WRONLY);
-    if(fd >= 0){
-        write(fd, "0", 2);
-        close(fd);
-    }
-
-    // unexport B
-    snprintf(buf, sizeof(buf), "/dev/bone/pwm/%d/unexport", ss);
-    fd = open(buf, O_WRONLY);
-    if(fd >= 0){
-        write(fd, "1", 2);
-        close(fd);
-    }
-
-    return 0;
-}
-
-
 int rc_pwm_init(int ss, int frequency)
 {
     int periodA_fd;
@@ -106,9 +53,6 @@ int rc_pwm_init(int ss, int frequency)
         fprintf(stderr,"ERROR in rc_pwm_init, frequency must be between %dHz and %dHz\n", MIN_HZ, MAX_HZ);
         return -1;
     }
-
-    if(__unexport_channels(ss)==-1) return -1;
-    if(__export_channels(ss)==-1) return -1;
 
     // --- FIXED PATHS START HERE ---
 
@@ -265,8 +209,6 @@ int rc_pwm_cleanup(int ss)
     close(enableB_fd);
     close(dutyA_fd[ss]);
     close(dutyB_fd[ss]);
-
-    __unexport_channels(ss);
 
     init_flag[ss] = 0;
     return 0;

@@ -1,92 +1,81 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <dirent.h>
-#include <ctype.h>
 
-#include <rc/rc_find_pin.h>
+#include "rc/rc_find_pin.h"
 
-/**
- * Parse a number from "gpiochipX"
+
+/*
+ * ==========================================================
+ *  PLATFORM-SWITCH:
+ *  - Auf ARM (BeagleBone) → echte gpiod-Implementierung
+ *  - Beim Cross-Build → Stub, damit static build funktioniert
+ * ==========================================================
  */
-static int parse_chip_number(const char *name)
+#ifdef __arm__
+
+#include <gpiod.h>
+
+int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
 {
-    if (strncmp(name, "gpiochip", 8) != 0) return -1;
-    return atoi(name + 8);
-}
+    if (!line_name || !chip_out || !line_out) {
+        fprintf(stderr, "rc_find_pin: invalid arguments\n");
+        return -1;
+    }
 
-/**
- * Parse "line:  16:  \"MDIR2A\"" → return line=16 if name matches
- */
-static int match_line(const char *line, const char *wanted)
-{
-    const char *p = strstr(line, ":");
-    if (!p) return -1;
-    p++; // skip first :
+    /* Wir haben auf dem BeagleBone IMMER 4 GPIO-Chips: gpiochip0..3 */
+    char chipname[32];
+    struct gpiod_chip *chip = NULL;
+    struct gpiod_line *line = NULL;
+    const char *lname;
+    int num_lines;
 
-    int offset = atoi(p);
+    for (int chip_id = 0; chip_id < 4; chip_id++) {
 
-    const char *name_start = strstr(line, "\"");
-    if (!name_start) return -1;
-    name_start++;
+        snprintf(chipname, sizeof(chipname), "gpiochip%d", chip_id);
+        chip = gpiod_chip_open(chipname);
+        if (!chip) continue;
 
-    const char *name_end = strstr(name_start, "\"");
-    if (!name_end) return -1;
+        num_lines = gpiod_chip_num_lines(chip);
 
-    char name[128];
-    int len = name_end - name_start;
-    if (len <= 0 || len >= (int)sizeof(name)) return -1;
+        for (int l = 0; l < num_lines; l++) {
+            line = gpiod_chip_get_line(chip, l);
+            if (!line) continue;
 
-    strncpy(name, name_start, len);
-    name[len] = '\0';
+            lname = gpiod_line_name(line);
+            if (!lname) continue;
 
-    if (strcmp(name, wanted) == 0)
-        return offset;
-
-    return -1;
-}
-
-rc_pin_t rc_find_pin(const char *line_name)
-{
-    rc_pin_t result = { -1, -1 };
-
-    DIR *d = opendir("/sys/kernel/debug/gpio");
-    if (!d) return result;
-
-    struct dirent *ent;
-    while ((ent = readdir(d)) != NULL) {
-
-        // look for gpiochipX files
-        if (strncmp(ent->d_name, "gpiochip", 8) != 0)
-            continue;
-
-        int chip_num = parse_chip_number(ent->d_name);
-        if (chip_num < 0)
-            continue;
-
-        char path[256];
-        snprintf(path, sizeof(path),
-                 "/sys/kernel/debug/gpio/%s", ent->d_name);
-
-        FILE *f = fopen(path, "r");
-        if (!f) continue;
-
-        char line[512];
-        while (fgets(line, sizeof(line), f)) {
-
-            int offset = match_line(line, line_name);
-            if (offset >= 0) {
-                result.chip = chip_num;
-                result.line = offset;
-                fclose(f);
-                closedir(d);
-                return result;
+            if (strcmp(lname, line_name) == 0) {
+                *chip_out = chip_id;
+                *line_out = l;
+                gpiod_chip_close(chip);
+                return 0; // Erfolg
             }
         }
 
-        fclose(f);
+        gpiod_chip_close(chip);
     }
 
-    closedir(d);
-    return result;
+    fprintf(stderr, "rc_find_pin: line name '%s' not found\n", line_name);
+    return -1;
 }
+
+#else
+/* ==========================================================
+ *  CROSS-BUILD STUB (Windows)
+ *  static library kann NICHT gegen libgpiod linken
+ * ========================================================== */
+
+int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
+{
+    fprintf(stderr,
+        "rc_find_pin WARNING: Stub called for '%s' (host build, no gpiod)\n",
+        line_name);
+
+    /*
+     * Rückgabe −1 = not found
+     * Das ist OK, solange keine Tests auf dem Host ausgeführt werden.
+     */
+    return -1;
+}
+
+#endif

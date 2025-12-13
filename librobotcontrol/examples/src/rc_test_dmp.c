@@ -240,9 +240,12 @@ int main(int argc, char *argv[])
 	// start with default config and modify based on options
 	rc_mpu_config_t conf = rc_mpu_default_config();
 	conf.i2c_bus = I2C_BUS;
-	rc_pin_t p = rc_find_pin("IMU_INT");
-	conf.gpio_interrupt_pin_chip = p.chip;
-	conf.gpio_interrupt_pin = p.line;
+	int chip, line;
+	if (rc_find_pin("IMU_INT", &chip, &line) != 0) {
+	    fprintf(stderr, "ERROR: IMU_INT not found\n");
+	    return -1;
+	}	conf.gpio_interrupt_pin_chip = chip;
+	conf.gpio_interrupt_pin = line;
 
 	// parse arguments
 	opterr = 0;

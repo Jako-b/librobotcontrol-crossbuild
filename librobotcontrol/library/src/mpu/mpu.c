@@ -158,9 +158,16 @@ rc_mpu_config_t rc_mpu_default_config(void)
 	rc_mpu_config_t conf;
 
 	// connectivity
-	rc_pin_t p = rc_find_pin("IMU_INT");
-	conf.gpio_interrupt_pin_chip = p.chip;
-	conf.gpio_interrupt_pin = p.line;
+	int chip, line;
+	if (rc_find_pin("IMU_INT", &chip, &line) != 0) {
+	    fprintf(stderr, "ERROR: IMU_INT not found\n");
+	    conf.i2c_bus = -1;
+	    conf.gpio_interrupt_pin_chip = -1;
+	    conf.gpio_interrupt_pin = -1;
+	    return conf;
+	}
+	conf.gpio_interrupt_pin_chip = chip;
+	conf.gpio_interrupt_pin = line;
 	conf.i2c_bus = RC_IMU_BUS;
 	conf.i2c_addr = RC_MPU_DEFAULT_I2C_ADDR;
 	conf.show_warnings = 0;

@@ -30,8 +30,6 @@ static int pwmch[CHANNELS];
 static int channels = 0;
 static int stby_chip;
 static int stby_pin;
-rc_pin_t p;
-
 
 
 int rc_motor_init(void)
@@ -44,6 +42,8 @@ int rc_motor_init_freq(int pwm_frequency_hz)
 {
 	int i;
 
+	int chip, line;
+
 	if(rc_model()==MODEL_BB_POCKET){
 		channels = CHANNELS_POCKET;
 	}
@@ -51,25 +51,25 @@ int rc_motor_init_freq(int pwm_frequency_hz)
 		channels = CHANNELS;
 	}
 
-	// set pins for motor 1
-	p = rc_find_pin("MDIR1A");
-	dirA_chip[0] = p.chip;
-	dirA_pin[0]  = p.line;
+	// MDIR1A
+	if (rc_find_pin("MDIR1A", &chip, &line) != 0) return -1;
+	dirA_chip[0] = chip;
+	dirA_pin[0]  = line;
 
-	p = rc_find_pin("MDIR1B");
-	dirB_chip[0] = p.chip;
-	dirB_pin[0]  = p.line;
-	pwmss[0]=1;
-	pwmch[0]='A';
+	// MDIR1B
+	if (rc_find_pin("MDIR1B", &chip, &line) != 0) return -1;
+	dirB_chip[0] = chip;
+	dirB_pin[0]  = line;
 
-	// motor 2
-	p = rc_find_pin("MDIR2A");
-	dirA_chip[1] = p.chip;
-	dirA_pin[1]  = p.line;
+	// MDIR2A
+	if (rc_find_pin("MDIR2A", &chip, &line) != 0) return -1;
+	dirA_chip[1] = chip;
+	dirA_pin[1]  = line;
 
-	p = rc_find_pin("MDIR2B");
-	dirB_chip[1] = p.chip;
-	dirB_pin[1]  = p.line;
+	// MDIR2B
+	if (rc_find_pin("MDIR2B", &chip, &line) != 0) return -1;
+	dirB_chip[1] = chip;
+	dirB_pin[1]  = line;
 	
 	if(rc_model()==MODEL_BB_POCKET) {
 		pwmss[1]=0;
@@ -79,31 +79,35 @@ int rc_motor_init_freq(int pwm_frequency_hz)
 		pwmch[1]='B';
 	}
 
-	// motor 3
-	p = rc_find_pin("MDIR3A");
-	dirA_chip[2] = p.chip;
-	dirA_pin[2]  = p.line;
+	// MDIR3A
+	if (rc_find_pin("MDIR3A", &chip, &line) != 0) return -1;
+	dirA_chip[2] = chip;
+	dirA_pin[2]  = line;
 
-	p = rc_find_pin("MDIR3B");
-	dirB_chip[2] = p.chip;
-	dirB_pin[2]  = p.line;
+	// MDIR3B
+	if (rc_find_pin("MDIR3B", &chip, &line) != 0) return -1;
+	dirB_chip[2] = chip;
+	dirB_pin[2]  = line;
 	pwmss[2]=2;
 	pwmch[2]='A';
 
-	// motor 4
-	p = rc_find_pin("MDIR4A");
-	dirA_chip[3] = p.chip;
-	dirA_pin[3]  = p.line;
+	// MDIR4A
+	if (rc_find_pin("MDIR4A", &chip, &line) != 0) return -1;
+	dirA_chip[3] = chip;
+	dirA_pin[3]  = line;
 
-	p = rc_find_pin("MDIR4B");
-	dirB_chip[3] = p.chip;
-	dirB_pin[3]  = p.line;
+	// MDIR4B
+	if (rc_find_pin("MDIR4B", &chip, &line) != 0) return -1;
+	dirB_chip[3] = chip;
+	dirB_pin[3]  = line;
+
 	pwmss[3]=2;
 	pwmch[3]='B';
 
-	p = rc_find_pin("MOT_STBY");
-	stby_chip = p.chip;
-	stby_pin  = p.line;
+	// MOT_STBY
+	if (rc_find_pin("MOT_STBY", &chip, &line) != 0) return -1;
+	stby_chip = chip;
+	stby_pin  = line;
 
 	// set up pwm channels
 	if(unlikely(rc_pwm_init(0,pwm_frequency_hz))){

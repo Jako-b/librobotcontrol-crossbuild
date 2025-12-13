@@ -35,6 +35,12 @@ LINKER = $(CC)
 export PATH := /usr/bin:$(TC_BIN):$(PATH)
 export MSYS2_ARG_CONV_EXCL := *
 
+SYSROOT := $(ROOT_DIR)/arm-sysroot
+export SYSROOT
+export CFLAGS := -I$(SYSROOT)/include
+export LDFLAGS := -L$(SYSROOT)/lib
+
+
 # =====================================================
 # Default target: use librobotcontrol's own Makefile
 # =====================================================
@@ -47,6 +53,7 @@ all:
 	$(MAKE) -f Makefile --no-print-directory V=1 \
     TOOLCHAIN_DIR="$(TOOLCHAIN_DIR)" \
     CC="$(CC)" CXX="$(CXX)" AR="$(AR)" LD="$(LD)" LINKER="$(LINKER)" \
+    CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
     LIBROBOTCONTROL_STATIC="$(LIBROBOTCONTROL_STATIC)"
 
 clean:

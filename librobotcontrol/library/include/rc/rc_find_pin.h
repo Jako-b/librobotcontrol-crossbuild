@@ -1,13 +1,6 @@
-#pragma once
+#ifndef RC_FIND_PIN_H
+#define RC_FIND_PIN_H
 
-typedef struct {
-	int chip;
-	int line;
-} rc_pin_t;
+int rc_find_pin(const char *line_name, int *chip_out, int *line_out);
 
-/**
- * Find GPIO line by name.
- *
- * Returns rc_pin_t with chip = -1, line = -1 if not found.
- */
-rc_pin_t rc_find_pin(const char *line_name);
+#endif
