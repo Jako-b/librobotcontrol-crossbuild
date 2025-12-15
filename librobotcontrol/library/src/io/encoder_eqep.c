@@ -28,7 +28,9 @@
 static int fd[3]; //store file descriptors for 3 position files
 static int init_flag = 0; // boolean to check if mem mapped
 
-
+//###############################################################################
+//TODO: Assert that counter can count backwards. Currently just counting upwards.
+//###############################################################################
 
 int rc_encoder_eqep_init(void)
 {
