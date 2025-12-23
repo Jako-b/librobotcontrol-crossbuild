@@ -61,6 +61,10 @@ int rc_motor_init_freq(int pwm_frequency_hz)
 	dirB_chip[0] = chip;
 	dirB_pin[0]  = line;
 
+	// PWM mapping for motor 1 (regression fix)
+	pwmss[0] = 1;
+	pwmch[0] = 'A';
+
 	// MDIR2A
 	if (rc_find_pin("MDIR2A", &chip, &line) != 0) return -1;
 	dirA_chip[1] = chip;
@@ -111,7 +115,7 @@ int rc_motor_init_freq(int pwm_frequency_hz)
 
 	// set up pwm channels
 	if(unlikely(rc_pwm_init(0,pwm_frequency_hz))){
-		fprintf(stderr,"ERROR in rc_motor_init, failed to initialize pwm subsystem 1\n");
+		fprintf(stderr,"ERROR in rc_motor_init, failed to initialize pwm subsystem 0\n");
 		return -1;
 	}
 	if(unlikely(rc_pwm_init(1,pwm_frequency_hz))){

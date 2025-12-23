@@ -1,9 +1,9 @@
 /dts-v1/;
 /plugin/;
 
-/* #include <dt-bindings/pinctrl/am33xx.h> */
-/* #include <dt-bindings/gpio/gpio.h> */
-/* #include <dt-bindings/interrupt-controller/irq.h> */
+#include <dt-bindings/pinctrl/am33xx.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
 
 &{/chosen} {
     overlays {};
@@ -324,5 +324,11 @@
 &eqep2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&eqep2_pins>;
+	status = "okay";
+};
+
+&ehrpwm2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ehrpwm2_pins>;
 	status = "okay";
 };

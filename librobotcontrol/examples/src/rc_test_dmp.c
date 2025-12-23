@@ -22,8 +22,6 @@
 // bus for Robotics Cape and BeagleboneBlue is 2, interrupt pin is on gpio3.21
 // change these for your platform
 #define I2C_BUS 2
-#define GPIO_INT_PIN_CHIP 3
-#define GPIO_INT_PIN_PIN  21
 
 // Global Variables
 static int running = 0;
@@ -43,6 +41,8 @@ static rc_mpu_orientation_t __orientation_prompt(void);
 static void __print_usage(void);
 static void __print_data(void);
 static void __print_header(void);
+
+
 
 
 /**

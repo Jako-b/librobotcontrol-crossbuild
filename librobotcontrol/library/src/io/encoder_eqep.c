@@ -189,7 +189,7 @@ int rc_encoder_eqep_read(int ch)
         perror("ERROR in rc_encoder_eqep_read, can't read position fd");
         return -1;
     }
-    return atoi(buf);
+    return (int)strtoul(buf, NULL, 10);
 }
 
 

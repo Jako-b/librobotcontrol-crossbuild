@@ -1,5 +1,5 @@
 # =====================================================
-# librobotcontrol cross build wrapper (portable + MSYS2)
+# librobotcontrol cross build wrapper (FORCE MODE)
 # =====================================================
 
 SHELL := /usr/bin/bash
@@ -8,8 +8,8 @@ SHELL := /usr/bin/bash
 # Root directory of this Makefile (absolute path)
 ROOT_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
-# librobotcontrol static library (convert to Windows path for gcc.exe)
-LIBROBOTCONTROL_STATIC := $(shell cygpath -w "$(ROOT_DIR)/library/lib/librobotcontrol.a")
+# WICHTIG: Wir nutzen -m für "Mixed" Pfade (C:/Users/...), damit Make keine Backslashes verschluckt!
+LIBROBOTCONTROL_STATIC := $(shell cygpath -m "$(ROOT_DIR)/library/lib/librobotcontrol.a")
 export LIBROBOTCONTROL_STATIC
 
 # =====================================================
@@ -17,44 +17,58 @@ export LIBROBOTCONTROL_STATIC
 # =====================================================
 
 # expect TOOLCHAIN_DIR to be provided by startEclipse.cmd
-
 PREFIX := arm-none-linux-gnueabihf-
-
-# Convert Windows paths → MSYS paths automatically
 TC_BIN := $(shell cygpath -u "$(TOOLCHAIN_DIR)/bin")
 
-# Toolchain binaries (force override!)
-CC     = $(TC_BIN)/$(PREFIX)gcc
-CXX    = $(TC_BIN)/$(PREFIX)g++
-AR     = $(TC_BIN)/$(PREFIX)ar
-LD     = $(TC_BIN)/$(PREFIX)ld
-STRIP  = $(TC_BIN)/$(PREFIX)strip
-LINKER = $(CC)
+CC      = $(TC_BIN)/$(PREFIX)gcc
+CXX     = $(TC_BIN)/$(PREFIX)g++
+AR      = $(TC_BIN)/$(PREFIX)ar
+LD      = $(TC_BIN)/$(PREFIX)ld
+STRIP   = $(TC_BIN)/$(PREFIX)strip
+LINKER  = $(CC)
 
-# Ensure toolchain is first in PATH
 export PATH := /usr/bin:$(TC_BIN):$(PATH)
 export MSYS2_ARG_CONV_EXCL := *
 
 SYSROOT := $(ROOT_DIR)/arm-sysroot
 export SYSROOT
-export CFLAGS := -I$(SYSROOT)/include
-export LDFLAGS := -L$(SYSROOT)/lib
+# Auch hier -m für sichere Pfade
+ROOT_WIN := $(shell cygpath -m "$(ROOT_DIR)")
+SYSROOT_WIN := $(shell cygpath -m "$(SYSROOT)")
 
+export CFLAGS := -I$(ROOT_WIN)/library/include -I$(SYSROOT_WIN)/include
 
 # =====================================================
-# Default target: use librobotcontrol's own Makefile
+# FORCE LDFLAGS
+# Hier definieren wir ALLES, was der Linker braucht.
+# Wir geben ihm die .a Datei direkt (kein -l), damit er sie garantiert findet.
+# =====================================================
+export LDFLAGS := -L$(ROOT_WIN)/library/lib \
+                  -L$(SYSROOT_WIN)/lib \
+                  -lrobotcontrol \
+                  -lgpiod -lm -lrt -pthread
+
+# =====================================================
+# Build Targets
 # =====================================================
 
 all:
-	@echo ">>> ROOT_DIR=$(ROOT_DIR)"
-	@echo ">>> TOOLCHAIN_DIR=$(TOOLCHAIN_DIR)"
-	@echo ">>> Using CC=$(CC)"
-	cd "$(ROOT_DIR)" && mkdir -p lib && \
+	@echo ">>> 1. Building LIBRARY..."
+	cd "$(ROOT_DIR)" && mkdir -p library/lib && \
 	$(MAKE) -f Makefile --no-print-directory V=1 \
-    TOOLCHAIN_DIR="$(TOOLCHAIN_DIR)" \
-    CC="$(CC)" CXX="$(CXX)" AR="$(AR)" LD="$(LD)" LINKER="$(LINKER)" \
-    CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
-    LIBROBOTCONTROL_STATIC="$(LIBROBOTCONTROL_STATIC)"
+	TOOLCHAIN_DIR="$(TOOLCHAIN_DIR)" \
+	CC="$(CC)" CXX="$(CXX)" AR="$(AR)" LD="$(LD)" LINKER="$(LINKER)" \
+	CFLAGS="$(CFLAGS)" \
+	LIBROBOTCONTROL_STATIC="$(LIBROBOTCONTROL_STATIC)"
+
+	@echo ">>> 2. Building ALL EXAMPLES..."
+	cd "$(ROOT_DIR)/examples" && \
+	$(MAKE) -f Makefile --no-print-directory \
+	TOOLCHAIN_DIR="$(TOOLCHAIN_DIR)" \
+	GPIOD_SYSROOT="$(SYSROOT_WIN)" \
+	CC="$(CC)" CXX="$(CXX)" AR="$(AR)" LD="$(LD)" LINKER="$(LINKER)" \
+	CFLAGS="$(CFLAGS)" \
+	LDFLAGS="$(LDFLAGS)"
 
 clean:
 	cd "$(ROOT_DIR)" && $(MAKE) -f Makefile --no-print-directory clean
@@ -63,7 +77,7 @@ install uninstall:
 	cd "$(ROOT_DIR)" && $(MAKE) -f Makefile --no-print-directory $@
 
 # =====================================================
-# Optional: deploy build result to BeagleBone via rsync
+# Deploy
 # =====================================================
 
 TARGET_USER := debian
@@ -71,7 +85,7 @@ TARGET_IP   := 192.168.7.2
 TARGET_PATH := /home/$(TARGET_USER)/rc-build
 
 deploy:
-	@echo ">>> Deploying librobotcontrol build to $(TARGET_IP)"
+	@echo ">>> Deploying..."
 	rsync -avz --delete "$(ROOT_DIR)/library/lib/" $(TARGET_USER)@$(TARGET_IP):$(TARGET_PATH)/lib/
 	rsync -avz --delete "$(ROOT_DIR)/examples/"     $(TARGET_USER)@$(TARGET_IP):$(TARGET_PATH)/examples/
 

@@ -22,10 +22,10 @@ LD          ?= ld
 WFLAGS      := -Wall -Wextra -Werror=float-equal -Wuninitialized \
     -Wunused-variable -Wdouble-promotion -pedantic -Wmissing-prototypes \
     -Wmissing-declarations -Werror=undef
-GPIOD_SYSROOT := C:/Users/pille/librobotcontrol-crossbuild-cross-build-portable/librobotcontrol/arm-sysroot
+GPIOD_SYSROOT := ../arm-sysroot
 
-CFLAGS      := -g -pthread -I $(INCLUDEDIR) -I$(GPIOD_SYSROOT)/include
-LDFLAGS    += $(LIBDIR)/librobotcontrol.a \
+CFLAGS      += -g -pthread -I $(INCLUDEDIR) -I$(GPIOD_SYSROOT)/include
+LDFLAGS    += -lrobotcontrol \
               -L$(GPIOD_SYSROOT)/lib \
               -lgpiod -lm -lrt -pthread
 # commands

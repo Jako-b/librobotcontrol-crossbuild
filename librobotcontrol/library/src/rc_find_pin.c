@@ -22,7 +22,6 @@ int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
         return -1;
     }
 
-    /* Wir haben auf dem BeagleBone IMMER 4 GPIO-Chips: gpiochip0..3 */
     char chipname[32];
     struct gpiod_chip *chip = NULL;
     struct gpiod_line *line = NULL;
@@ -31,9 +30,11 @@ int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
 
     for (int chip_id = 0; chip_id < 4; chip_id++) {
 
-        snprintf(chipname, sizeof(chipname), "gpiochip%d", chip_id);
-        chip = gpiod_chip_open(chipname);
-        if (!chip) continue;
+    	chip = gpiod_chip_open_by_number(chip_id);
+    	if (!chip) {
+    	    perror("gpiod_chip_open_by_number");
+    	    continue;
+    	}
 
         num_lines = gpiod_chip_num_lines(chip);
 
