@@ -185,7 +185,7 @@ int rc_pwm_cleanup(int ss)
         return -1;
     }
 
-    // duty auf 0 setzen
+    // set duty to 0
     if(unlikely(write(dutyA_fd[ss], "0", 2)==-1)){
         perror("ERROR in rc_pwm_cleanup, failed to write to channel A duty fd");
         return -1;
@@ -195,7 +195,7 @@ int rc_pwm_cleanup(int ss)
         return -1;
     }
 
-    // Kanäle abschalten
+    // disable channels
     if(unlikely(write(enableA_fd, "0", 2)==-1)){
         perror("ERROR in rc_pwm_cleanup, failed to disable channel A");
         return -1;

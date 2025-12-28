@@ -6,9 +6,9 @@
 
 /*
  * ==========================================================
- *  PLATFORM-SWITCH:
- *  - Auf ARM (BeagleBone) → echte gpiod-Implementierung
- *  - Beim Cross-Build → Stub, damit static build funktioniert
+ * PLATFORM-SWITCH:
+ * - On ARM (Target/BeagleBone) -> Real gpiod implementation
+ * - On Host (Cross-Build)      -> Stub, to allow static build without libgpiod
  * ==========================================================
  */
 #ifdef __arm__
@@ -28,11 +28,14 @@ int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
     const char *lname;
     int num_lines;
 
+    // Scan up to 4 gpio chips
     for (int chip_id = 0; chip_id < 4; chip_id++) {
 
     	chip = gpiod_chip_open_by_number(chip_id);
     	if (!chip) {
-    	    perror("gpiod_chip_open_by_number");
+    	    // Silently continue or print error if needed.
+            // Often standard permission errors on non-exported chips.
+    	    // perror("gpiod_chip_open_by_number");
     	    continue;
     	}
 
@@ -49,7 +52,7 @@ int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
                 *chip_out = chip_id;
                 *line_out = l;
                 gpiod_chip_close(chip);
-                return 0; // Erfolg
+                return 0; // Success
             }
         }
 
@@ -62,8 +65,8 @@ int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
 
 #else
 /* ==========================================================
- *  CROSS-BUILD STUB (Windows)
- *  static library kann NICHT gegen libgpiod linken
+ * CROSS-BUILD STUB (Host/Windows)
+ * Static library cannot link against libgpiod on host
  * ========================================================== */
 
 int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
@@ -73,8 +76,8 @@ int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
         line_name);
 
     /*
-     * Rückgabe −1 = not found
-     * Das ist OK, solange keine Tests auf dem Host ausgeführt werden.
+     * Return -1 = not found
+     * This is acceptable as long as no hardware tests are executed on the host.
      */
     return -1;
 }

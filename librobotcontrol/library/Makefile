@@ -26,7 +26,6 @@ WFLAGS      := -Wall -Wextra -Werror=float-equal -Wuninitialized \
     -Wmissing-declarations -Werror=undef
 CFLAGS      := $(EXT_CFLAGS) -g -fPIC -I $(INCLUDEDIR)
 OPT_FLAGS   := -O2
-LDFLAGS := $(LDFLAGS) -static -lm -lrt -pthread -L$(SYSROOT)/lib -lgpiod
 
 # different compile flags for math libs
 MATH_OPT_FLAGS  := -O3 -ffast-math -ftree-vectorize

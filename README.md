@@ -1,137 +1,98 @@
-# librobotcontrol – Cross-Build für Windows (MSYS2 + Eclipse)
+# librobotcontrol - Windows Cross-Compilation Bundle
 
-Dieses Projekt ermöglicht das Cross-Kompilieren von **librobotcontrol** für den BeagleBone direkt unter Windows – ohne Linux-VM.
+This repository provides a complete environment to cross-compile **librobotcontrol** for the BeagleBone directly on Windows using Eclipse CDT and MSYS2.
 
-Ein neuer Nutzer muss lediglich:
-1. MSYS2 installieren
-2. ARM-Toolchain herunterladen
-3. in `startEclipse.cmd` zwei Pfade anpassen  
-4. `startEclipse.cmd` starten  
-→ danach kann sofort in Eclipse gebaut werden.
+It solves common issues with modern toolchains (GLIBC version mismatches) by **statically linking** core libraries.
 
----
+## Key Features
 
-## 1. Voraussetzungen
-
-### MSYS2
-Download: https://www.msys2.org
-
-Wird benötigt für:
-- `/usr/bin/bash`
-- `make`
-- `cygpath`
-
-Nach Installation MSYS2 aktualisieren:
-
-```bash
-pacman -Syu
-pacman -S make
-```
+* **No Linux VM required:** Builds directly on Windows.
+* **Static Linking:** Includes `libgpiod.a` and links statically against GLIBC. The resulting binaries run on **any** BeagleBone Linux version (old Debian Buster/Bullseye or newer).
+* **Modern Kernel Support:** Updated source code to use `/dev/bone/` paths and `libgpiod` instead of deprecated Sysfs GPIO.
 
 ---
 
-### ARM GNU Toolchain (arm-none-linux-gnueabihf)
+## 1. Prerequisites
 
-Download:  
-https://developer.arm.com/downloads
+### A) MSYS2
+1.  Download from [msys2.org](https://www.msys2.org).
+2.  Install and update:
+    ```bash
+    pacman -Syu
+    pacman -S make
+    ```
+    *(Note: `make` is required inside MSYS2).*
 
-Installation:  
-Einfach in beliebigen Ordner entpacken, z. B.:
+### B) ARM GNU Toolchain
+1.  Download the **Windows (mingw-w64-i686) hosted** toolchain: [Arm GNU Toolchain Downloads](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads).
+2.  Extract it to a path without spaces, e.g., `C:/Toolchains/arm-gnu-toolchain`.
 
-```
-C:/toolchains/arm-gnu-toolchain/
-```
-
----
-
-### Eclipse CDT
-
-Eclipse wird **nicht** mehr im Repository bereitgestellt.
-
-Der Nutzer installiert Eclipse CDT selbst und trägt den Pfad zu `eclipse.exe` in  
-`startEclipse.cmd` ein.
+### C) Eclipse CDT
+1.  Install "Eclipse IDE for C/C++ Developers".
 
 ---
 
-## 2. Toolchain- und Eclipse-Pfade setzen
+## 2. Setup
 
-In der Datei:
-
-```
-startEclipse.cmd
-```
-
-folgende zwei Variablen anpassen:
-
-```
-set "TOOLCHAIN_DIR=C:/.../arm-gnu-toolchain"
-set "ECLIPSE_EXE=C:/.../eclipse.exe"
-```
-
-- nur vorwärts-Slashes `/`
-- kein abschließender Slash
+1.  **Clone this repository.**
+2.  **Edit `startEclipse.cmd`:**
+    Open the file in a text editor and set the paths to your toolchain and Eclipse installation:
+    ```batch
+    set "TOOLCHAIN_DIR=C:/Toolchains/arm-gnu-toolchain"
+    set "ECLIPSE_EXE=C:/Eclipse/eclipse/eclipse.exe"
+    ```
 
 ---
 
-## 3. Eclipse starten
+## 3. Building
 
-Unter Windows:
+**Do not start Eclipse directly!** You must use the `startEclipse.cmd` script to set up the environment variables correctly.
 
-```
-startEclipse.cmd
-```
+1.  Double-click **`startEclipse.cmd`**.
+2.  Eclipse will open.
 
-Wichtig:  
-**Eclipse darf nicht direkt gestartet werden.**  
-Nur der Start über `.cmd` setzt PATH, MSYS2 und die Toolchain korrekt.
+### Import the Project
+1.  **File** -> **Import** -> **C/C++** -> **Existing Code as Makefile Project**.
+2.  Browse to the `librobotcontrol` folder inside this repository.
+3.  Select **"Cross GCC"** (or ignore the toolchain selection).
+4.  Click **Finish**.
 
----
+### Configure the Build Target
 
-## 4. Build in Eclipse
+1.  Right-click on the project -> **Properties**.
+2.  Navigate to **C/C++ Build**.
+3.  Click on the **Behavior** tab (on the right side).
+4.  Change the text in the **Build (incremental build)** field:
+    * From: `all`
+    * To: `-f Makefile.cross all`
+5.  Change the text in the **Clean** field:
+    * From: `clean`
+    * To: `-f Makefile.cross clean`
+6.  Click **Apply and Close**.
 
-Der Ordner "librobotcontrol" muss importiert werden über 
-
-Import → C/C++ → Existing Code as Makefile Project
-
-Dann den Ordner "librobotcontrol" auswählen und bestätigen.
-
-
-In Eclipse:
-
-- Project → Clean
-- Project → Build Project
-
-Eclipse führt automatisch `make all` aus.  
-Der Compiler wird durch `startEclipse.sh` automatisch auf die ARM-Toolchain gesetzt.
-
----
-
-## 5. Repository-Struktur
-
-```
-librobotcontrol-crossbuild/
-├── librobotcontrol/        # eigentliche Bibliothek
-├── startEclipse.cmd        # Windows-Launcher
-├── startEclipse.sh         # MSYS2-Wrapper
-├── README.md
-└── .gitignore
-```
-
-Der Nutzer bringt selbst mit:
-
-- ARM Toolchain
-- Eclipse CDT
-
-Diese sind bewusst **nicht** im Repository enthalten.
+### Build
+1.  **Project** -> **Build Project**.
+    * *Note: Eclipse executes `make -f Makefile.cross all`.*
+2.  Check the console output. You should see the cross-compilation steps and the creation of static libraries.
 
 ---
 
-## 6. .gitignore Hinweise
+## 4. Hardware Configuration (Device Tree)
 
-Dieses Repository speichert **nicht**:
+To use the PWM channels (Motors/Servos) on modern kernels (Linux 5.10+), you must enable the correct Device Tree Overlay.
 
-- Toolchain
-- Eclipse Installation
-- Eclipse Workspace
-- Build-Output
-- temporäre Dateien
+This repository includes a patched overlay in:
+`librobotcontrol/device_tree/dtb-6.12.x/new_activated_pwm2/RoboticsCape.dtbo`
+
+**Installation on BeagleBone:**
+1.  Copy the `.dtbo` file to the BeagleBone.
+2.  Edit `/boot/uEnv.txt` on the BeagleBone to load this overlay.
+
+---
+
+## 5. Technical Details
+
+### Path Updates
+The source code (`pwm.c`, `rc_find_pin.c`, `encoder_eqep.c`) has been updated to use the modern BeagleBone interface paths:
+* Old: `/sys/class/gpio` (Deprecated)
+* New: `/dev/bone/pwm/...` and `/dev/gpiochip...`

@@ -22,12 +22,10 @@ LD          ?= ld
 WFLAGS      := -Wall -Wextra -Werror=float-equal -Wuninitialized \
     -Wunused-variable -Wdouble-promotion -pedantic -Wmissing-prototypes \
     -Wmissing-declarations -Werror=undef
-GPIOD_SYSROOT := ../arm-sysroot
 
-CFLAGS      += -g -pthread -I $(INCLUDEDIR) -I$(GPIOD_SYSROOT)/include
-LDFLAGS    += -lrobotcontrol \
-              -L$(GPIOD_SYSROOT)/lib \
-              -lgpiod -lm -lrt -pthread
+CFLAGS      += -g -pthread -I $(INCLUDEDIR)
+LDFLAGS     += -lrobotcontrol -lgpiod -lm -lrt -pthread
+
 # commands
 RM          := rm -rf
 INSTALL     := install -m 755

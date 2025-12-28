@@ -45,7 +45,6 @@ export PATH="/usr/bin:$TOOLCHAIN_DIR/bin:$PATH"
 export TOOLCHAIN_DIR
 export SHELL=/usr/bin/bash
 
-# >>> WICHTIG: Compiler-Variablen explizit setzen <<<
 export CC="$TOOLCHAIN_DIR/bin/arm-none-linux-gnueabihf-gcc"
 export CXX="$TOOLCHAIN_DIR/bin/arm-none-linux-gnueabihf-g++"
 export AR="$TOOLCHAIN_DIR/bin/arm-none-linux-gnueabihf-ar"

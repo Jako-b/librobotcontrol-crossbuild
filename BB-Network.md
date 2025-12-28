@@ -1,39 +1,39 @@
-### A. Windows-Konfiguration (Host)
+### A. Windows Configuration (Host)
 
-1.  **Netzwerkadapter konfigurieren:**
-    * Öffnen Sie die *Systemsteuerung -> Netzwerk- und Freigabecenter -> Adaptereinstellungen ändern*.
-    * Suchen Sie den Adapter, der dem BeagleBone entspricht.
-    * Rechtsklick -> *Eigenschaften -> Internetprotokoll Version 4 (TCP/IPv4)*.
-    * Folgende statische IP vergeben:
-        * **IP-Adresse:** `192.168.7.1`
-        * **Subnetzmaske:** `255.255.255.0`
-        * **Standardgateway:** *leer lassen*
-        * **DNS:** *leer lassen*
+1.  **Configure Network Adapter:**
+    * Open *Control Panel -> Network and Sharing Center -> Change adapter settings*.
+    * Locate the adapter corresponding to the BeagleBone.
+    * Right-click -> *Properties -> Internet Protocol Version 4 (TCP/IPv4)*.
+    * Set the following static IP:
+        * **IP address:** `192.168.7.1`
+        * **Subnet mask:** `255.255.255.0`
+        * **Default gateway:** *leave blank*
+        * **DNS:** *leave blank*
 
-2.  **NAT aktivieren (PowerShell als Administrator):**
-    Führen Sie folgenden Befehl in der PowerShell aus:
+2.  **Enable NAT (PowerShell as Administrator):**
+    Run the following command in PowerShell:
 
     ```powershell
     New-NetNat -Name "BeagleBoneNAT" -InternalIPInterfaceAddressPrefix 192.168.7.0/24
     ```
 
-### B. BeagleBone-Konfiguration
+### B. BeagleBone Configuration
 
-Verbinden Sie sich auf den BeagleBone und führen Sie folgende Schritte aus:
+Connect to the BeagleBone and perform the following steps:
 
-1.  **Standard-Gateway setzen:**
+1.  **Set Default Gateway:**
 
     ```bash
     sudo ip route add default via 192.168.7.1 dev usb0
     ```
 
-2.  **DNS-Server eintragen:**
+2.  **Set DNS Server:**
 
     ```bash
     echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
     ```
 
-3.  **Verbindung testen:**
+3.  **Test Connection:**
 
     ```bash
     ping -c 3 8.8.8.8
@@ -41,9 +41,9 @@ Verbinden Sie sich auf den BeagleBone und führen Sie folgende Schritte aus:
 
 ---
 
-## 2. Installation von libgpiod
+## Installing libgpiod
 
-Stellen Sie sicher, dass der BeagleBone Internetzugriff hat (siehe oben), und führen Sie dann aus:
+Ensure that the BeagleBone has internet access (see above), and then run:
 
 ```bash
 sudo apt update
