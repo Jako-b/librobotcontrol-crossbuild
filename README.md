@@ -12,6 +12,12 @@ It solves common issues with modern toolchains (GLIBC version mismatches) by **s
 
 ---
 
+## Port Status
+This version is optimized for **Kernel 6.x** and **Debian 12**. 
+It replaces deprecated Sysfs GPIO calls with modern `libgpiod` and uses `/dev/bone/` symlinks for hardware access.
+
+Full test results can be found in [VALIDATION.md](./VALIDATION.md).
+
 ## 1. Prerequisites
 
 ### A) MSYS2
