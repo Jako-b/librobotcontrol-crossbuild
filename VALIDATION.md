@@ -4,7 +4,7 @@ This validation was performed to verify the functionality of the ported `librobo
 
 ### Test Environment
 * **Hardware:** TI AM335x BeagleBone Green
-* **Operating System:** Debian 12.12 (Bookworm)
+* **Operating System:** BeagleBoard.org Debian Bookworm Base Image 2025-09-05
 * **Kernel:** Linux 6.12.45-bone34 (PREEMPT, armv7l)
 * **Library Version:** 1.0.5
 * **Porting Method:** Native compilation with custom patches for `libgpiod` integration and `/dev/bone/` path compatibility.

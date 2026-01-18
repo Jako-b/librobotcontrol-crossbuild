@@ -24,7 +24,7 @@ WFLAGS      := -Wall -Wextra -Werror=float-equal -Wuninitialized \
     -Wmissing-declarations -Werror=undef
 
 CFLAGS      += -g -pthread -I $(INCLUDEDIR)
-LDFLAGS     += -L $(LIBDIR)-lrobotcontrol -lgpiod -lm -lrt -pthread
+LDFLAGS     += -L $(LIBDIR) -lrobotcontrol -lgpiod -lm -lrt -pthread
 
 # commands
 RM          := rm -rf

@@ -1,18 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
 #include "rc/rc_find_pin.h"
-
-
-/*
- * ==========================================================
- * PLATFORM-SWITCH:
- * - On ARM (Target/BeagleBone) -> Real gpiod implementation
- * - On Host (Cross-Build)      -> Stub, to allow static build without libgpiod
- * ==========================================================
- */
-#ifdef __arm__
-
 #include <gpiod.h>
 
 int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
@@ -33,9 +21,6 @@ int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
 
     	chip = gpiod_chip_open_by_number(chip_id);
     	if (!chip) {
-    	    // Silently continue or print error if needed.
-            // Often standard permission errors on non-exported chips.
-    	    // perror("gpiod_chip_open_by_number");
     	    continue;
     	}
 
@@ -62,24 +47,3 @@ int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
     fprintf(stderr, "rc_find_pin: line name '%s' not found\n", line_name);
     return -1;
 }
-
-#else
-/* ==========================================================
- * CROSS-BUILD STUB (Host/Windows)
- * Static library cannot link against libgpiod on host
- * ========================================================== */
-
-int rc_find_pin(const char *line_name, int *chip_out, int *line_out)
-{
-    fprintf(stderr,
-        "rc_find_pin WARNING: Stub called for '%s' (host build, no gpiod)\n",
-        line_name);
-
-    /*
-     * Return -1 = not found
-     * This is acceptable as long as no hardware tests are executed on the host.
-     */
-    return -1;
-}
-
-#endif
