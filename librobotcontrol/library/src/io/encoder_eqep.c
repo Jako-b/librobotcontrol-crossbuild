@@ -24,6 +24,8 @@
 #define EQEP_BASE1 "/dev/bone/counter/1"
 #define EQEP_BASE2 "/dev/bone/counter/2"
 
+static const char* eqep_dirs[] = {EQEP_BASE0, EQEP_BASE1, EQEP_BASE2};
+
 
 static int fd[3]; //store file descriptors for 3 position files
 static int init_flag = 0; // boolean to check if mem mapped
@@ -35,6 +37,7 @@ static int init_flag = 0; // boolean to check if mem mapped
 int rc_encoder_eqep_init(void)
 {
     int temp_fd;
+    /*
     if (init_flag) return 0;
 
     // initialize all fd[] to invalid
@@ -148,6 +151,55 @@ int rc_encoder_eqep_init(void)
 
     init_flag = 1;
     return 0;
+    */
+    int i;
+    char path[128];
+
+    for(i=0; i<3; i++) fd[i] = -1;
+
+    for(i=0; i<3; i++){
+
+        if(i==1 && rc_model() == MODEL_BB_POCKET) continue;
+
+            snprintf(path, sizeof(path), "%s/count0/enable", eqep_dirs[i]);
+            temp_fd = open(path, O_WRONLY);
+
+            if(temp_fd < 0) {
+            	fprintf(stderr, "WARNING: eQEP%d not found at '%s'. Channel %d disabled.\n", i, path, i+1);
+                continue;
+            }
+
+            if(write(temp_fd, "1", 2) == -1){
+                perror("ERROR writing enable=1");
+                close(temp_fd);
+                continue;
+            }
+            close(temp_fd);
+
+            snprintf(path, sizeof(path), "%s/count0/ceiling", eqep_dirs[i]);
+            temp_fd = open(path, O_WRONLY);
+            if(temp_fd >= 0){
+                write(temp_fd, "4294967295", 10);
+                close(temp_fd);
+            }
+
+            snprintf(path, sizeof(path), "%s/count0/count", eqep_dirs[i]);
+            temp_fd = open(path, O_RDWR);
+            if(temp_fd < 0){
+                perror("ERROR opening count");
+                continue;
+            }
+
+            if(write(temp_fd, "0", 2) == -1){
+                perror("ERROR zeroing position");
+                close(temp_fd);
+                continue;
+            }
+
+            fd[i] = temp_fd;
+        }
+    init_flag = 1;
+    return 0;
 }
 
 int rc_encoder_eqep_cleanup(void)
@@ -180,6 +232,7 @@ int rc_encoder_eqep_read(int ch)
         fprintf(stderr,"ERROR: in rc_encoder_eqep_read, encoder channel must be between 1 & 3 inclusive\n");
         return -1;
     }
+    if(fd[ch-1] == -1) return 0;
     // seek to beginning of file and read
     if(unlikely(lseek(fd[ch-1],0,SEEK_SET)<0)){
         perror("ERROR: in rc_encoder_eqep_read, failed to seek to beginning of fd");

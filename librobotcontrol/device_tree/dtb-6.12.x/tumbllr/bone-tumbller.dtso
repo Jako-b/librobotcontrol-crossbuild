@@ -1,0 +1,464 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2025 Martin Orehek
+ */
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/pinctrl/am33xx.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/*
+ * Helper to show loaded overlays under: /proc/device-tree/chosen/overlays/
+ */
+&{/chosen} {
+	librobotcontrol_model = "tumbllr";
+
+        overlays {
+                bone-tumbller.kernel = "__TIMESTAMP__";
+        };
+};
+
+/* 
+Info (Orehek):
+	Reference: am335x-boneblue.dts
+	
+	ecapx + ehrpwmx are part of the epwmss system
+	They need to be enabled individually!
+	
+	https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/arm/boot/dts/am335x-boneblue.dts?h=linux-6.1.y
+	https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/arm/boot/dts/am33xx-l4.dtsi?h=linux-6.1.y
+	
+	Hints taken from this post: 
+	https://github.com/beagleboard/BeagleBoard-DeviceTrees/pull/67
+	https://github.com/beagleboard/BeagleBoard-DeviceTrees/pull/67/commits/0488dcbb863317c6be21b0682bbbd0216c5a5af7
+*/
+
+/*
+	From Robotic Cape / Robot Control Library
+	=> https://github.com/beagleboard/librobotcontrol/blob/main/library/src/motor.c
+	// motor pin definitions
+	#define MDIR1A_CHIP		1	//gpio1.28	P9.12/P2.08
+	#define MDIR1A_PIN		28	//gpio1.28	P9.12/P2.08
+	#define MDIR1A_CHIP_BLUE	2	//gpio2.0	pin T13
+	#define MDIR1A_PIN_BLUE		0	//gpio2.0	pin T13
+	#define MDIR1B_CHIP		0	//gpio0.31	P9.13/P2.07
+	#define MDIR1B_PIN		31	//gpio0.31	P9.13/P2.07
+
+	#define MDIR2A_CHIP		1	//gpio1.16	P9.15
+	#define MDIR2A_PIN		16	//gpio1.16	P9.15
+	#define MDIR2A_CHIP_POCKET	0	//gpio0.26	P1.34
+	#define MDIR2A_PIN_POCKET	26	//gpio0.26	P1.34
+	#define MDIR2B_CHIP		2	//gpio2.17	P8.34
+	#define MDIR2B_PIN		17	//gpio2.17	P8.34
+	#define MDIR2B_CHIP_BLUE	0	//gpio0.10	P8_31
+	#define MDIR2B_PIN_BLUE		10	//gpio0.10	P8_31
+	#define MDIR2B_CHIP_POCKET	1	//gpio1.27	P2.02
+	#define MDIR2B_PIN_POCKET	27	//gpio1.27	P2.02
+
+	#define MDIR3B_CHIP		2	//gpio2.8	P8.43
+	#define MDIR3B_PIN		8	//gpio2.8	P8.43
+	#define MDIR3A_CHIP		2	//gpio2.9	P8.44
+	#define MDIR3A_PIN		9	//gpio2.9	P8.44
+
+	#define MDIR4A_CHIP		2	//gpio2.6	P8.45
+	#define MDIR4A_PIN		6	//gpio2.6	P8.45
+	#define MDIR4B_CHIP		2	//gpio2.7	P8.46
+	#define MDIR4B_PIN		7	//gpio2.7	P8.46
+
+	#define MOT_STBY		0,20	//gpio0.20	P9.41/P1.20
+
+	=> https://github.com/beagleboard/librobotcontrol/blob/main/library/src/mpu/mpu.c
+	//I2C bus and address definitions for Robotics Cape & bealgebone blue
+	#define RC_IMU_BUS		2
+	#define RC_IMU_INTERRUPT_PIN_CHIP 3
+	#define RC_IMU_INTERRUPT_PIN_PIN  21 // gpio3.21 P9.25	
+
+	=> Pin Mapping on Tumbller Schematic see: 
+		* table 'PinMap_RoboticsCape_TumbllerPCBv1.3' 
+		* in 'MaterialList_PinMap.ods' 
+		* in 'git\tumbllerpcb_pcb-design\TumbllerPCB\Parts'
+
+*/
+
+/*
+ gpio0..3 taken from:
+ /home/user/yocto/bbb_v3/build_scarthgap/tmp/work/bbx_rt-embcomp-linux-gnueabi/linux-ti-staging-rt/6.6.58+git/git/arch/arm/boot/dts/ti/omap/am335x-boneblack.dts
+*/
+&gpio0 {
+	gpio-line-names =
+		"[mdio_data]",
+		"[mdio_clk]",
+		"P9_22 [spi0_sclk]",
+		"P9_21 [spi0_d0]",
+		"P9_18 [spi0_d1]",
+		"P9_17 [spi0_cs0]",
+		"[mmc0_cd]",
+		"P8_42A [ecappwm0]",
+		"P8_35 [lcd d12]",
+		"P8_33 [lcd d13]",
+		"P8_31 [lcd d14]",
+		"P8_32 [lcd d15]",
+		"P9_20 [i2c2_sda]",
+		"P9_19 [i2c2_scl]",
+		"P9_26 [uart1_rxd]",
+		"P9_24 [uart1_txd]",
+		"[rmii1_txd3]",
+		"[rmii1_txd2]",
+		"[usb0_drvvbus]",
+		"[hdmi cec]",
+		"STBYTB",
+		"[rmii1_txd1]",
+		"P8_19 [ehrpwm2a]",
+		"P8_13 [ehrpwm2b]",
+		"NC",
+		"NC",
+		"P8_14",
+		"P8_17",
+		"[rmii1_txd0]",
+		"[rmii1_refclk]",
+		"P9_11 [uart4_rxd]",
+		"AIN2";
+};
+
+&gpio1 {
+	gpio-line-names =
+		"P8_25 [mmc1_dat0]",
+		"[mmc1_dat1]",
+		"P8_5 [mmc1_dat2]",
+		"P8_6 [mmc1_dat3]",
+		"P8_23 [mmc1_dat4]",
+		"P8_22 [mmc1_dat5]",
+		"P8_3 [mmc1_dat6]",
+		"P8_4 [mmc1_dat7]",
+		"NC",
+		"NC",
+		"NC",
+		"NC",
+		"P8_12",
+		"P8_11",
+		"P8_16",
+		"P8_15",
+		"BIN1",
+		"P9_23",
+		"P9_14 [ehrpwm1a]",
+		"P9_16 [ehrpwm1b]",
+		"[emmc rst]",
+		"[usr0 led]",
+		"[usr1 led]",
+		"[usr2 led]",
+		"[usr3 led]",
+		"[hdmi irq]",
+		"[usb vbus oc]",
+		"[hdmi audio]",
+		"AIN1",
+		"P8_26",
+		"P8_21 [emmc]",
+		"P8_20 [emmc]";
+};
+
+&gpio2 {
+	gpio-line-names =
+		"P9_15B",
+		"P8_18",
+		"P8_7",
+		"P8_8",
+		"MODE",
+		"SW_GP",
+		"P8_45 [hdmi]",
+		"P8_46 [hdmi]",
+		"P8_43 [hdmi]",
+		"P8_44 [hdmi]",
+		"P8_41 [hdmi]",
+		"P8_42 [hdmi]",
+		"P8_39 [hdmi]",
+		"P8_40 [hdmi]",
+		"P8_37 [hdmi]",
+		"P8_38 [hdmi]",
+		"P8_36 [hdmi]",
+		"BIN2",
+		"[rmii1_rxd3]",
+		"[rmii1_rxd2]",
+		"[rmii1_rxd1]",
+		"[rmii1_rxd0]",
+		"P8_27 [hdmi]",
+		"P8_29 [hdmi]",
+		"P8_28 [hdmi]",
+		"P8_30 [hdmi]",
+		"[mmc0_dat3]",
+		"[mmc0_dat2]",
+		"[mmc0_dat1]",
+		"[mmc0_dat0]",
+		"[mmc0_clk]",
+		"[mmc0_cmd]";
+};
+
+&gpio3 {
+	gpio-line-names =
+		"[mii col]",
+		"[mii crs]",
+		"[mii rx err]",
+		"[mii tx en]",
+		"[mii rx dv]",
+		"[i2c0 sda]",
+		"[i2c0 scl]",
+		"[jtag emu0]",
+		"[jtag emu1]",
+		"[mii tx clk]",
+		"[mii rx clk]",
+		"NC",
+		"NC",
+		"[usb vbus en]",
+		"P9_31 [spi1_sclk]",
+		"P9_29 [spi1_d0]",
+		"P9_30 [spi1_d1]",
+		"P9_28 [spi1_cs0]",
+		"P9_42B [ecappwm0]",
+		"P9_27",
+		"P9_41A",
+		"INTMPU",
+		"NC",
+		"NC",
+		"NC",
+		"NC",
+		"NC",
+		"NC",
+		"NC",
+		"NC",
+		"NC",
+		"NC"; 
+};
+
+/*
+ * Free up the pins used by the cape from the pinmux helpers.
+ */
+&ocp {
+
+	/* TODO: Motor Control Pin frei geben */
+
+	/* PWM1 */
+	P9_14_pinmux { status = "disabled"; };	/* pwm: ehrpwm1a */
+	P9_16_pinmux { status = "disabled"; };  /* pwm: ehrpwm1b */
+
+	/* E1 */
+	P9_42_pinmux { status = "disabled"; };	/* P9_42: gpmc_a1.gpio0_07 */
+	P9_92_pinmux { status = "disabled"; };	/* P9_42.1: mcasp0_aclkr.gpio3_18 */
+	P9_27_pinmux { status = "disabled"; };	/* P9_27: mcasp0_fsr.gpio3_19 */
+
+	/* E2 */
+	P8_35_pinmux { status = "disabled"; };	/* P8_35: (V2) lcd_data12.eQEP1A_in */
+	P8_33_pinmux { status = "disabled"; };	/* P8_33: (V3) lcd_data13.eQEP1B_in */
+};
+
+/* partly taken from: am335x-boneblue.dts */
+&am33xx_pinmux {
+	/* free clkout2 which is P9.41 - AM335X_PIN_XDMA_EVENT_INTR1
+	   => required for Pin used Motor Control = 
+	   Solution NOT working => Kernel Startup fails! 
+	   Original Code in:
+	   /home/user/yocto/bbb_v3/build_scarthgap/tmp/work/bbx_rt-embcomp-linux-gnueabi/linux-ti-staging-rt/6.6.58+git/git/arch/arm/boot/dts/ti/omap/am335x-bone-common.dtsi
+	   => solution: create a patch for: am335x-bone-common.dtsi
+	*/
+
+	/* PWM1 for Motor 1 and 2
+	 * Note: The Motor driver TB6612FNG has internal pull-downs, therefore disable internal pulls.
+	 *
+	 * PWM: https://docs.beagleboard.io/latest/boards/capes/cape-interface-spec.html#pwm
+	 * ehrpwm2 P9.14 P9.16
+	 *
+	 */
+	ehrpwm1_pins: pinmux_ehrpwm1_pins {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_GPMC_A2, PIN_OUTPUT, MUX_MODE6)		/* (U14) P9_14: gpmc_a2.ehrpwm1a - PWM_1A */
+			AM33XX_PADCONF(AM335X_PIN_GPMC_A3, PIN_OUTPUT, MUX_MODE6)		/* (T14) P9_16: gpmc_a3.ehrpwm1b - PWM_1B */
+		>;
+	};
+
+	/* E1
+	 * Note: No external pull-down, therefore enable internal pull-down.
+	 */
+	eqep0_pins: pinmux_eqep0_pins {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_MCASP0_ACLKR, PIN_INPUT_PULLDOWN, MUX_MODE1)	/* (B12) mcasp0_aclkr.eQEP0A_in */
+			AM33XX_PADCONF(AM335X_PIN_MCASP0_FSR, PIN_INPUT_PULLDOWN, MUX_MODE1)	/* (C13) mcasp0_fsr.eQEP0B_in */
+		>;
+	};
+
+	/* E2
+	 * Note: according to schematics, both pins have external 100k pull-down resistors,
+	 *       therefore disable the internal pull.
+	 */
+	eqep1_pins: pinmux_eqep1_pins {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_LCD_DATA12, PIN_INPUT, MUX_MODE2)		/* (V2) lcd_data12.eQEP1A_in */
+			AM33XX_PADCONF(AM335X_PIN_LCD_DATA13, PIN_INPUT, MUX_MODE2)		/* (V3) lcd_data13.eQEP1B_in */
+		>;
+	};
+
+	/* No need here, done in ti/omap/am335-bone-common.dtsi 
+	i2c2_pins: pinmux_i2c2_pins {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_UART1_CTSN, PIN_INPUT_PULLUP, MUX_MODE3)
+			AM33XX_PADCONF(AM335X_PIN_UART1_RTSN, PIN_INPUT_PULLUP, MUX_MODE3)
+		>;
+	};
+	*/
+
+	/* Onboard Motor Driver Control Pins
+	 * Note: The Motor driver TB6612FNG has internal pull-downs, therefore disable internal pulls.
+	 * Branch: v5.10.x-ti-unified
+	 */
+	/* Onboard Motor Driver Control Pins
+	 * Note: The Motor driver TB6612FNG has internal pull-downs, therefore disable internal pulls.
+	 * defines found in:
+	 * /home/user/yocto/bbb_v3/build_scarthgap/tmp/work/bbx_rt-embcomp-linux-gnueabi/linux-ti-staging-rt/6.6.58+git/git/include/dt-bindings/pinctrl/am33xx.h
+	 */
+	motorcontrol_pins: pinmux_motorcontrol_pins {
+		pinctrl-single,pins = <
+			/* BBBlue: AM33XX_PADCONF(AM335X_PIN_GPMC_CSN3, PIN_OUTPUT, MUX_MODE7)		 (T13) gpmc_csn3.gpio2[0] - MDIR_1A */
+			AM33XX_PADCONF(AM335X_PIN_GPMC_BEN1, PIN_OUTPUT, MUX_MODE7)		/* (U18) gpmc_be1n.gpio1[28] - MDIR_1A == P9.12 MDIR_1A different from blue!!*/
+			AM33XX_PADCONF(AM335X_PIN_GPMC_WPN, PIN_OUTPUT, MUX_MODE7)		/* (U17) gpmc_wpn.gpio0[31] - MDIR_1B */
+
+			AM33XX_PADCONF(AM335X_PIN_GPMC_A0, PIN_OUTPUT, MUX_MODE7)		/* (R13) gpmc_a0.gpio1[16] - MDIR_2A */
+			/* BBBlue: AM33XX_PADCONF(AM335X_PIN_LCD_DATA14, PIN_OUTPUT, MUX_MODE7)		 (V4) lcd_data14.gpio0[10] - MDIR_2B */
+			AM33XX_PADCONF(AM335X_PIN_LCD_DATA11, PIN_OUTPUT, MUX_MODE7)		/* (U4) lcd_data11.gpio2[17] - MDIR_2B == P8.34 MDIR_2B different from blue!!*/
+
+			AM33XX_PADCONF(AM335X_PIN_XDMA_EVENT_INTR1, PIN_OUTPUT, MUX_MODE7)	/* (D14) xdma_event_intr1.gpio0[20] - MOT_STBY */
+		>;
+	};
+
+	/* IMU 9-Axis MPU-9250 */
+/*
+	mpu9250_pins: pinmux_mpu9250_pins {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_MCASP0_AHCLKX, PIN_INPUT, MUX_MODE7)		 (U10) mcasp0_ahclkx.gpio3[21] - INT_MPU 
+		>;
+	};
+*/
+
+	/* UT1 */
+/*
+	uart1_pins: pinmux_uart1_pins {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_UART1_RXD, PIN_INPUT_PULLUP, MUX_MODE0)
+			AM33XX_PADCONF(AM335X_PIN_UART1_TXD, PIN_OUTPUT_PULLDOWN, MUX_MODE0)
+		>;
+	};
+*/
+
+};
+
+/* provide data for symlinks */
+&uart0 {
+	symlink = "bone/uart/0";
+};
+&uart2 {
+	symlink = "bone/uart/2";
+};
+&i2c0 {
+	symlink = "bone/i2c/0";
+};
+&i2c2 {
+	symlink = "bone/i2c/2";
+};
+/*
+	Symlinks for:
+		-> eqep => /sys/bus/counter/devices 
+		   => dedicated udev rule [83-counter-noroot.rules]
+		-> ehrpwm => /sys/class/pwm/ 
+		   => dedicated udev rule [81-pwm-noroot.rule] 
+		      + bb-symlinks.service + bb-symlinks.sh
+*/
+
+
+&tscadc {
+	status = "okay";
+	adc {
+		ti,adc-channels = <0 1 2 3 4 5 6 7>;
+	};
+};
+
+/*
+&ecap0 {
+	status="okay";
+};
+*/
+&epwmss0 {
+	status = "okay";
+};
+
+&eqep0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&eqep0_pins>;
+	status = "okay";
+};
+
+&ehrpwm0 {
+	/* Does not seem to have any pins assigned in Kernel 4.14 DTS */
+	status = "okay";
+};
+
+/*
+&ecap1 {
+	status="okay";
+};
+*/
+&epwmss1 {
+	status = "okay";
+};
+
+&eqep1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&eqep1_pins>;
+	status = "okay";
+};
+
+/* use PWM1 for M1 and M2 */
+&ehrpwm1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ehrpwm1_pins>;
+	status = "okay";
+};
+
+/*
+&motorcontrol {
+	pinctrl-names = "default";
+	pinctrl-0 = <&motorcontrol_pins>;
+	status = "okay";	
+};
+*/
+
+/*
+&i2c2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c2_pins>;
+
+	status = "okay";
+	clock-frequency = <400000>;
+
+	mpu9250@68 {
+		compatible = "invensense,mpu9250";
+                pinctrl-0 = <&mpu9250_pins>;
+		reg = <0x68>;
+		interrupt-parent = <&gpio3>;
+		interrupts = <21 IRQ_TYPE_EDGE_RISING>;
+		i2c-gate {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			ax8975@c {
+				compatible = "asahi-kasei,ak8975";
+				reg = <0x0c>;
+			};
+		};
+	};
+};
+*/
+
+/*
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart1_pins>;
+	status = "okay";
+};
+*/

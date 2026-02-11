@@ -29,10 +29,28 @@ static void __check_model(void)
 	int ret;
 	FILE *fd;
 
+	//check for tumbllr
+	FILE *fp_tumbllr;
+	char buf_tumbllr[64];
+
 	// start as unknown until finding out more info.
 	current_model = MODEL_UNKNOWN;
 	current_category = CATEGORY_UNKNOWN;
 	has_checked = 1;
+
+    // check for overlay
+    fp_tumbllr = fopen("/proc/device-tree/chosen/librobotcontrol_model", "r");
+    if (fp_tumbllr != NULL) {
+        if (fgets(buf_tumbllr, sizeof(buf_tumbllr), fp_tumbllr) != NULL) {
+        	if (strstr(buf_tumbllr, "tumbllr") != NULL) {
+                current_model = MODEL_TUMBLLR;
+                current_category = CATEGORY_BEAGLEBONE;
+                fclose(fp_tumbllr);
+                return;
+            }
+        }
+        fclose(fp_tumbllr);
+    }
 
 	// check for x86/x86_64 personal comptuer
 	ret=system("uname -m | grep -q x86");
@@ -200,6 +218,7 @@ void rc_model_print(void)
 	caseprint(MODEL_RPI_CM)
 	caseprint(MODEL_RPI_CM3)
 	caseprint(MODEL_PC)
+	caseprint(MODEL_TUMBLLR)
 
 	default:
 		fprintf(stderr, "ERROR: in rc_model_print, invalid model detected\n");

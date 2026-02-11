@@ -25,9 +25,10 @@
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.58768570" name="Optimization level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option defaultValue="gnu.c.debugging.level.max" id="gnu.c.compiler.option.debugging.level.993159991" name="Debug level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1497596359" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\Users\pille\arbeit_repos\librobotcontrol-crossbuild\librobotcontrol\arm-sysroot\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/robotcontrol/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\Users\orehek\Data\git\Piller_librobotcontrol-crossbuild_v2\librobotcontrol\arm-sysroot\include&quot;"/>
 								</option>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="true" id="gnu.c.compiler.option.include.files.1730804935" name="Include files (-include)" superClass="gnu.c.compiler.option.include.files" useByScannerDiscovery="false" valueType="includeFiles"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.2122282886" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.823350861" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
@@ -40,9 +41,8 @@
 									<listOptionValue builtIn="false" value="gpiod"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.link.option.paths.1139237754" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;C:\Users\pille\arbeit_repos\librobotcontrol-crossbuild\librobotcontrol\arm-sysroot\lib&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/robotcontrol/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\Users\orehek\Data\git\Piller_librobotcontrol-crossbuild_v2\sysroot\usr\lib__XXX&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\Users\orehek\Data\git\Piller_librobotcontrol-crossbuild_v2\librobotcontrol\arm-sysroot\lib&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/../sysrootusrlib___XXX}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.889667519" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
