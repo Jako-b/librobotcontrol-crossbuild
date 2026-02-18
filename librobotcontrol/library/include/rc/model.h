@@ -96,6 +96,19 @@ void rc_model_print(void);
  */
 void rc_model_category_print(void);
 
+typedef struct {
+    const char* dirA;
+    const char* dirB;
+} rc_motor_pair_t;
+
+typedef struct {
+    rc_motor_pair_t motors[4];
+    const char* stby;
+    const char* imu_int;
+} rc_pinmap_t;
+
+int rc_model_get_pinmap(rc_pinmap_t* map);
+
 
 #ifdef __cplusplus
 }

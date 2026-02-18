@@ -16,41 +16,6 @@
 #define CHANNELS		4
 #define CHANNELS_POCKET		2
 
-// struct for one motor-channel
-typedef struct {
-    const char* dirA;
-    const char* dirB;
-} motor_pin_map_t;
-
-// struct for whole board
-typedef struct {
-    motor_pin_map_t motors[4];
-    const char* stby;
-} board_pin_map_t;
-
-
-// Configuration for RoboticsCape / BB Green
-static const board_pin_map_t PINMAP_BLUE = {
-    .motors = {
-        {"MDIR1A", "MDIR1B"}, // Motor 1
-        {"MDIR2A", "MDIR2B"}, // Motor 2
-        {"MDIR3A", "MDIR3B"}, // Motor 3
-        {"MDIR4A", "MDIR4B"}  // Motor 4
-    },
-    .stby = "MOT_STBY"
-};
-
-// Configuration for Tumbllr
-static const board_pin_map_t PINMAP_TUMBLLR = {
-    .motors = {
-        {"AIN1", "AIN2"},
-        {"BIN1", "BIN2"},
-        {"T_DIR3A", "T_DIR3B"},
-        {"T_DIR4A", "T_DIR4B"}
-    },
-    .stby = "STBYTB"
-};
-
 
 // polarity of the motor connections
 static const double polarity[]={1.0,-1.0,-1.0,1.0};
@@ -76,22 +41,20 @@ int rc_motor_init(void)
 
 int rc_motor_init_freq(int pwm_frequency_hz)
 {
-	int i;
+	int i, chip, line;
 
-	int chip, line;
+	rc_pinmap_t map;
 
-	const board_pin_map_t* map = NULL;
+	if (rc_model_get_pinmap(&map) < 0) return -1;
 
 	rc_model_t model = rc_model();
 
 	if(model==MODEL_BB_POCKET){
 		channels = CHANNELS_POCKET;
-		map = &PINMAP_BLUE;
 	}
 
 	else if(model == MODEL_TUMBLLR) {
 	        channels = 4;
-	        map = &PINMAP_TUMBLLR;
 	    }
 
 	else{
@@ -105,9 +68,9 @@ int rc_motor_init_freq(int pwm_frequency_hz)
 			dirB_chip[i] = -1;
 		}
 
-	if(map->stby != NULL) {
-		if(rc_find_pin(map->stby, &chip, &line) != 0) {
-	        fprintf(stderr, "ERROR: Standby pin '%s' not found.\n", map->stby);
+	if(map.stby != NULL) {
+		if(rc_find_pin(map.stby, &chip, &line) != 0) {
+	        fprintf(stderr, "ERROR: Standby pin '%s' not found.\n", map.stby);
             return -1;
         }
         stby_chip = chip;
@@ -116,31 +79,31 @@ int rc_motor_init_freq(int pwm_frequency_hz)
 
     for(i = 0; i < channels; i++) {
         // Direction A
-    	if(rc_find_pin(map->motors[i].dirA, &chip, &line) != 0) {
-    	            fprintf(stderr, "WARNING: Pin '%s' for Motor %d (DirA) not found. Disabling Motor.\n", map->motors[i].dirA, i+1);
-    	            dirA_chip[i] = -1;
-    	            continue;
+    	if(rc_find_pin(map.motors[i].dirA, &chip, &line) != 0) {
+    		fprintf(stderr, "WARNING: Pin '%s' for Motor %d (DirA) not found. Disabling Motor.\n", map.motors[i].dirA, i+1);
+            dirA_chip[i] = -1;
+            continue;
     	        }
         dirA_chip[i] = chip;
         dirA_pin[i]  = line;
         // Direction B
-        if(rc_find_pin(map->motors[i].dirB, &chip, &line) != 0) {
-                    fprintf(stderr, "WARNING: Pin '%s' for Motor %d (DirB) not found. Disabling Motor.\n", map->motors[i].dirB, i+1);
-                    dirA_chip[i] = -1;
-                    continue;
+        if(rc_find_pin(map.motors[i].dirB, &chip, &line) != 0) {
+        	fprintf(stderr, "WARNING: Pin '%s' for Motor %d (DirB) not found. Disabling Motor.\n", map.motors[i].dirB, i+1);
+            dirA_chip[i] = -1;
+            continue;
                 }
         dirB_chip[i] = chip;
         dirB_pin[i]  = line;
 
         // STANDARD LOGIC (BB BLUE):
-        if(map == &PINMAP_BLUE) {
+        if(model == MODEL_BB_POCKET) {
              if(i==0) { pwmss[0]=1; pwmch[0]='A'; }
              if(i==1) { pwmss[1]=1; pwmch[1]='B'; }
              if(i==2) { pwmss[2]=2; pwmch[2]='A'; }
              if(i==3) { pwmss[3]=2; pwmch[3]='B'; }
         }
 
-        else if(map == &PINMAP_TUMBLLR) {
+        else if(model == MODEL_TUMBLLR) {
         	if(i==0) { pwmss[0]=1; pwmch[0]='A'; }
           	if(i==1) { pwmss[1]=1; pwmch[1]='B'; }
            	if(i==2) { pwmss[2]=2; pwmch[2]='A'; }
@@ -221,11 +184,20 @@ int rc_motor_cleanup(void)
 	rc_pwm_cleanup(0);
 	rc_pwm_cleanup(1);
 	rc_pwm_cleanup(2);
-	rc_gpio_cleanup(stby_chip, stby_pin);
+	//rc_gpio_cleanup(stby_chip, stby_pin);
+	if(stby_chip != -1) {
+			rc_gpio_cleanup(stby_chip, stby_pin);
+		}
+
 	for(i=0;i<channels;i++){
-		rc_gpio_cleanup(dirA_chip[i],dirA_pin[i]);
-		rc_gpio_cleanup(dirB_chip[i],dirB_pin[i]);
+		if(dirA_chip[i] != -1) {
+			rc_gpio_cleanup(dirA_chip[i],dirA_pin[i]);
+		}
+		if(dirB_chip[i] != -1) {
+			rc_gpio_cleanup(dirB_chip[i],dirB_pin[i]);
+		}
 	}
+		return 0;
 	return 0;
 }
 

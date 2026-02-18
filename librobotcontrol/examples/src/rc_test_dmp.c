@@ -17,6 +17,7 @@
 #include <stdlib.h> // for atoi() and exit()
 #include <rc/mpu.h>
 #include <rc/time.h>
+#include <rc/model.h>
 #include <rc/rc_find_pin.h>
 
 // bus for Robotics Cape and BeagleboneBlue is 2, interrupt pin is on gpio3.21
@@ -240,11 +241,21 @@ int main(int argc, char *argv[])
 	// start with default config and modify based on options
 	rc_mpu_config_t conf = rc_mpu_default_config();
 	conf.i2c_bus = I2C_BUS;
+
+	//Get Pinmap
+	rc_pinmap_t map;
+	if(rc_model_get_pinmap(&map) < 0){
+        fprintf(stderr, "ERROR: Failed to get pinmap from model\n");
+        return -1;
+	}
+
 	int chip, line;
-	if (rc_find_pin("IMU_INT", &chip, &line) != 0) {
-	    fprintf(stderr, "ERROR: IMU_INT not found\n");
+
+	if (rc_find_pin(map.imu_int, &chip, &line) != 0) {
+	    fprintf(stderr, "ERROR: IMU Interrupt pin '%s' not found\n", map.imu_int);
 	    return -1;
-	}	conf.gpio_interrupt_pin_chip = chip;
+	}
+	conf.gpio_interrupt_pin_chip = chip;
 	conf.gpio_interrupt_pin = line;
 
 	// parse arguments

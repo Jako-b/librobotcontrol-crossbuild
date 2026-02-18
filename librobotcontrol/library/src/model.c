@@ -14,6 +14,29 @@
 #define MODEL_DIR "/proc/device-tree/model"
 #define BUF_SIZE 128
 
+static const rc_pinmap_t PINMAP_BLUE = {
+    .motors = {
+        {"MDIR1A", "MDIR1B"},
+        {"MDIR2A", "MDIR2B"},
+        {"MDIR3A", "MDIR3B"},
+        {"MDIR4A", "MDIR4B"}
+    },
+    .stby = "MOT_STBY",
+    .imu_int = "IMU_INT"
+};
+
+static const rc_pinmap_t PINMAP_TUMBLLR = {
+    .motors = {
+        {"AIN1", "AIN2"},
+        {"BIN1", "BIN2"},
+        {"T_DIR3A", "T_DIR3B"}, // Dummy
+        {"T_DIR4A", "T_DIR4B"}  // Dummy
+    },
+    .stby = "STBYTB",
+    .imu_int = "INTMPU"
+};
+
+
 // current model stored in memory as enum for fast access
 static rc_model_t current_model;
 static rc_model_category_t current_category;
@@ -244,6 +267,20 @@ void rc_model_category_print(void)
 		break;
 	}
 	return;
+}
+
+int rc_model_get_pinmap(rc_pinmap_t* map)
+{
+    if(map == NULL) return -1;
+
+    if(!has_checked) __check_model();
+
+    if(current_model == MODEL_TUMBLLR) {
+        *map = PINMAP_TUMBLLR;
+    } else {
+        *map = PINMAP_BLUE;
+    }
+    return 0;
 }
 
 #undef caseprint
