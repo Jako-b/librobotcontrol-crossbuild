@@ -313,19 +313,22 @@ int rc_mpu_initialize(rc_mpu_data_t *data, rc_mpu_config_t conf)
 	uint8_t who_am_i;
 	rc_i2c_read_byte(config.i2c_bus, WHO_AM_I_MPU9250, &who_am_i);
 
-	// MPU6500
-	if(who_am_i == 0x70) {
+	if(who_am_i == 0x70 || who_am_i == 0x68 || who_am_i == 0x69) {
 		conf.enable_magnetometer = 0;
+		config.enable_magnetometer = 0;
+		has_magnetometer = 0;
+	} else {
+		has_magnetometer = 1;
 	}
 
-	if(conf.enable_magnetometer){
+	if(conf.enable_magnetometer && has_magnetometer){
 		if(__init_magnetometer(0)){
 			fprintf(stderr,"failed to initialize magnetometer\n");
 			rc_i2c_unlock_bus(config.i2c_bus);
 			return -1;
 		}
 	}
-	else if (who_am_i != 0x70) {
+	else {
 		__power_off_magnetometer();
 	}
 
@@ -849,6 +852,20 @@ int rc_mpu_initialize_dmp(rc_mpu_data_t *data, rc_mpu_config_t conf)
 	}
 	rc_usleep(1000);
 
+	//Magnetometer Check
+	uint8_t who_am_i;
+	rc_i2c_read_byte(config.i2c_bus, WHO_AM_I_MPU9250, &who_am_i);
+
+	printf("DEBUG: MPU ID: 0x%x\n", who_am_i);
+
+	if(who_am_i == 0x70 || who_am_i == 0x68 || who_am_i == 0x69) {
+		conf.enable_magnetometer = 0;
+		config.enable_magnetometer = 0;
+		has_magnetometer = 0;
+	} else {
+		has_magnetometer = 1;
+	}
+
 	if(__check_who_am_i()){
 		rc_i2c_unlock_bus(config.i2c_bus);
 		return -1;
@@ -910,7 +927,7 @@ int rc_mpu_initialize_dmp(rc_mpu_data_t *data, rc_mpu_config_t conf)
 	}
 
 	// enable bypass, more importantly this also configures the interrupt pin behavior
-	if(__mpu_set_bypass(1)){
+	if(__mpu_set_bypass(has_magnetometer)){
 		fprintf(stderr, "failed to run __mpu_set_bypass\n");
 		rc_i2c_unlock_bus(config.i2c_bus);
 		return -1;
@@ -945,47 +962,35 @@ int rc_mpu_initialize_dmp(rc_mpu_data_t *data, rc_mpu_config_t conf)
 	else __power_off_magnetometer();
 	*/
 
-	// Magnetometer-Check for DMP
-	uint8_t who_am_i;
-		rc_i2c_read_byte(config.i2c_bus, WHO_AM_I_MPU9250, &who_am_i);
-
-		if(who_am_i == 0x70) {
-			// MPU-6500 erkannt!
-			conf.enable_magnetometer = 0;
-			has_magnetometer = 0; // WICHTIG: Globales Flag setzen
-		} else {
-			has_magnetometer = 1;
+	// initialize the magnetometer too if requested in config
+	if(conf.enable_magnetometer && has_magnetometer){ // Nur wenn auch wirklich vorhanden
+		if(__init_magnetometer(0)){
+			fprintf(stderr,"ERROR: failed to initialize_magnetometer\n");
+			rc_i2c_unlock_bus(config.i2c_bus);
+			return -1;
 		}
-
-		// initialize the magnetometer too if requested in config
-		if(conf.enable_magnetometer && has_magnetometer){ // Nur wenn auch wirklich vorhanden
-			if(__init_magnetometer(0)){
-				fprintf(stderr,"ERROR: failed to initialize_magnetometer\n");
-				rc_i2c_unlock_bus(config.i2c_bus);
-				return -1;
-			}
-			if(rc_mpu_read_mag(data)==-1){
-				fprintf(stderr,"ERROR: failed to initialize_magnetometer\n");
-				rc_i2c_unlock_bus(config.i2c_bus);
-				return -1;
-			}
-		// collect some mag data to get a starting heading
-		double x_sum = 0.0;
-		double y_sum = 0.0;
-		double mag_vec[3];
-		for(i=0;i<20;i++){
-			rc_mpu_read_mag(data);
-			// correct for orientation and put data into mag_vec
-			if(__mag_correct_orientation(mag_vec)) return -1;
-			x_sum += mag_vec[0];
-			y_sum += mag_vec[1];
-			rc_usleep(10000);
+		if(rc_mpu_read_mag(data)==-1){
+			fprintf(stderr,"ERROR: failed to initialize_magnetometer\n");
+			rc_i2c_unlock_bus(config.i2c_bus);
+			return -1;
 		}
-		startMagYaw = -atan2(y_sum, x_sum);
-		}
-		else {
-			__power_off_magnetometer();
-		}
+	// collect some mag data to get a starting heading
+	double x_sum = 0.0;
+	double y_sum = 0.0;
+	double mag_vec[3];
+	for(i=0;i<20;i++){
+		rc_mpu_read_mag(data);
+		// correct for orientation and put data into mag_vec
+		if(__mag_correct_orientation(mag_vec)) return -1;
+		x_sum += mag_vec[0];
+		y_sum += mag_vec[1];
+		rc_usleep(10000);
+	}
+	startMagYaw = -atan2(y_sum, x_sum);
+	}
+	else {
+		__power_off_magnetometer();
+	}
 
 	// set up the DMP, order is important, from motiondrive_tutorial.pdf:
 	// 1) load firmware
@@ -1278,7 +1283,7 @@ int __mpu_set_bypass(uint8_t bypass_on)
 	if(dmp_en){
 		tmp |= FIFO_EN_BIT; // enable fifo for dsp mode
 	}
-	if(!bypass_on){
+	if(!bypass_on && has_magnetometer){
 		tmp |= I2C_MST_EN; // i2c master mode when not in bypass
 	}
 	if (rc_i2c_write_byte(config.i2c_bus, USER_CTRL, tmp)){
@@ -1289,13 +1294,13 @@ int __mpu_set_bypass(uint8_t bypass_on)
 	// INT_PIN_CFG settings
 	tmp = LATCH_INT_EN | INT_ANYRD_CLEAR | ACTL_ACTIVE_LOW; // latching
 	//tmp =  ACTL_ACTIVE_LOW;	// non-latching
-	if(bypass_on)
+	if(bypass_on && has_magnetometer)
 		tmp |= BYPASS_EN;
 	if (rc_i2c_write_byte(config.i2c_bus, INT_PIN_CFG, tmp)){
 		fprintf(stderr,"ERROR in mpu_set_bypass, failed to write INT_PIN_CFG register\n");
 		return -1;
 	}
-	if(bypass_on){
+	if(bypass_on && has_magnetometer){
 		bypass_en = 1;
 	}
 	else{
