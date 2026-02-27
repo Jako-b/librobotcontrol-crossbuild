@@ -5,10 +5,10 @@ REM =========================================================
 REM  USER CONFIGURATION - PLEASE ADJUST THESE PATHS!
 REM =========================================================
 REM Path to your ARM Toolchain (root folder containing bin/)
-set "TOOLCHAIN_DIR=C:\Users\pille\ECSW\arm-gnu-toolchain"
+set "TOOLCHAIN_DIR=path\to\your\toolchain"
 
 REM Path to your Eclipse executable (e.g. C:/eclipse/eclipse.exe)
-set "ECLIPSE_EXE=C:\Users\pille\ECSW\eclipse-cpp/eclipse.exe"
+set "ECLIPSE_EXE=path\to\your\eclipse.exe"
 
 REM Example:
 REM set "TOOLCHAIN_DIR=C:/Toolchains/arm-gnu-toolchain"
